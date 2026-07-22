@@ -10,7 +10,7 @@ A professional-grade, scalable digital twin of OCP's phosphate ore grinding circ
 
 - [x] **Phase 00 - Foundation & team setup**
 - [x] **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)**
-- [ ] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
+- [x] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
 - [ ] **Phase 03 - 3D visualization (Blender + three.js)**
 - [ ] **Phase 04 - Knowledge graph + Asset Administration Shell (Protégé ontology + Neo4j Community + Eclipse BaSyx AAS)**
 - [ ] **Phase 05 - Dashboard & KPIs (React, embeds the 2D and 3D views)**

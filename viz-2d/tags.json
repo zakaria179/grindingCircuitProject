@@ -1,0 +1,185 @@
+{
+  "name": "OCP_Grinding_Circuit_Tags",
+  "tagType": "Provider",
+  "tags": [
+    {
+      "name": "Slurry_In",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Feed_Solid_Flow",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_In/metrics/Feed Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Feed_BPL",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_In/metrics/Feed BPL}",
+          "dataType": "Float8",
+          "engUnit": "%"
+        },
+        {
+          "name": "Feed_P80",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_In/metrics/Feed P80}",
+          "dataType": "Float8",
+          "engUnit": "µm"
+        },
+        {
+          "name": "Feed_Solid_Fraction",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_In/metrics/Feed Solid Fraction}",
+          "dataType": "Float8",
+          "engUnit": "%"
+        }
+      ]
+    },
+    {
+      "name": "PB_001",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Description",
+          "valueSource": "memory",
+          "value": "Pump Box 001 - Recovers cyclone underflow recycle",
+          "dataType": "String"
+        },
+        {
+          "name": "Inflow_Fresh",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/PB_001/metrics/Feed Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Inflow_Recycle",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/PB_001/metrics/Cyclone Underflow Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        }
+      ]
+    },
+    {
+      "name": "SP_001",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Description",
+          "valueSource": "memory",
+          "value": "Centrifugal Slurry Pump 001",
+          "dataType": "String"
+        },
+        {
+          "name": "Discharge_Flow",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/SP_001/metrics/Cyclone Feed Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Discharge_BPL",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/SP_001/metrics/Cyclone Feed BPL}",
+          "dataType": "Float8",
+          "engUnit": "%"
+        }
+      ]
+    },
+    {
+      "name": "CY_001",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Description",
+          "valueSource": "memory",
+          "value": "Hydrocyclone Cluster 001 - Target Cut: 160 µm",
+          "dataType": "String"
+        },
+        {
+          "name": "Underflow_Flow",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/CY_001/metrics/Cyclone Underflow Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Underflow_P80",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/CY_001/metrics/Cyclone Underflow P80}",
+          "dataType": "Float8",
+          "engUnit": "µm"
+        },
+        {
+          "name": "Target_Cut_P80",
+          "valueSource": "memory",
+          "value": 160.0,
+          "dataType": "Float8",
+          "engUnit": "µm"
+        }
+      ]
+    },
+    {
+      "name": "BM_001",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Description",
+          "valueSource": "memory",
+          "value": "Ball Mill 001 - Target Output: 160 µm",
+          "dataType": "String"
+        },
+        {
+          "name": "Discharge_Flow",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/BM_001/metrics/Ball Mill Discharge Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Discharge_P80",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/BM_001/metrics/Ball Mill Discharge P80}",
+          "dataType": "Float8",
+          "engUnit": "µm"
+        },
+        {
+          "name": "Target_P80",
+          "valueSource": "memory",
+          "value": 160.0,
+          "dataType": "Float8",
+          "engUnit": "µm"
+        }
+      ]
+    },
+    {
+      "name": "Slurry_Out",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "Output_Solid_Flow",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_Out/metrics/Output Slurry Solid Flow}",
+          "dataType": "Float8",
+          "engUnit": "t/h"
+        },
+        {
+          "name": "Output_BPL",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_Out/metrics/Output Slurry BPL}",
+          "dataType": "Float8",
+          "engUnit": "%"
+        },
+        {
+          "name": "Output_P80",
+          "valueSource": "expr",
+          "expression": "{[MQTT Engine]ocp/grinding/equipment/Slurry_Out/metrics/Output Slurry P80}",
+          "dataType": "Float8",
+          "engUnit": "µm"
+        }
+      ]
+    }
+  ]
+}

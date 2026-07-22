@@ -23,9 +23,9 @@ This file is the single source of truth for the project build status. Always che
   - **Status**: [x] Done
   - **What exists right now**: `replay-service` with `data.csv` (482 SysCAD readings dataset) and Python MQTT replay service (`main.py`) streaming telemetry live to Mosquitto MQTT topics (`ocp/grinding/telemetry` & equipment-specific topics). Verified via container logs.
 
-- [ ] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
-  - **Status**: [ ] Not Started
-  - **What exists right now**: Empty `/viz-2d` directory.
+- [x] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
+  - **Status**: [x] Done
+  - **What exists right now**: Ignition SCADA Gateway running on port `8088` via Docker Compose. Complete SCADA tag provider export (`viz-2d/tags.json`) and Perspective 2D Synoptic View schema (`viz-2d/flowsheet_perspective_view.json`) representing the 4-equipment closed-loop grinding circuit. Verified via HTTP 302 response on `:8088`.
 
 - [ ] **Phase 03 - 3D visualization (Blender + three.js)**
   - **Status**: [ ] Not Started

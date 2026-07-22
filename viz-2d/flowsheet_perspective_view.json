@@ -1,0 +1,186 @@
+{
+  "custom": {
+    "targetP80": 160.0,
+    "circuitName": "OCP Phosphate Ore Grinding Circuit 01"
+  },
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "width": 1280,
+      "height": 800
+    }
+  },
+  "root": {
+    "type": "ia.container.flex",
+    "props": {
+      "direction": "column",
+      "style": {
+        "backgroundColor": "#121824",
+        "color": "#FFFFFF",
+        "fontFamily": "Inter, sans-serif"
+      }
+    },
+    "children": [
+      {
+        "type": "ia.container.flex",
+        "meta": { "name": "HeaderBar" },
+        "props": {
+          "direction": "row",
+          "style": {
+            "height": "60px",
+            "backgroundColor": "#1E293B",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "padding": "0 24px",
+            "borderBottom": "1px solid #334155"
+          }
+        },
+        "children": [
+          {
+            "type": "ia.display.label",
+            "props": {
+              "text": "OCP Phosphate Grinding Circuit — 2D SCADA Synoptic (Ignition Maker Edition)",
+              "style": { "fontSize": "18px", "fontWeight": "bold", "color": "#38BDF8" }
+            }
+          },
+          {
+            "type": "ia.display.label",
+            "props": {
+              "text": "Target P80: 160.0 µm | Status: REPLAY ACTIVE",
+              "style": { "fontSize": "14px", "color": "#4ADE80" }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ia.container.flex",
+        "meta": { "name": "FlowsheetCanvas" },
+        "props": {
+          "direction": "row",
+          "style": {
+            "flex": "1 1 0%",
+            "padding": "24px",
+            "gap": "20px",
+            "justifyContent": "space-around",
+            "alignItems": "center"
+          }
+        },
+        "children": [
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_Slurry_In" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "180px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "1px solid #475569"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "Slurry_In", "style": { "fontWeight": "bold", "color": "#F8FAFC" } } },
+              { "type": "ia.display.label", "props": { "text": "Feed Flow: {[Tags]/Slurry_In/Feed_Solid_Flow} t/h" } },
+              { "type": "ia.display.label", "props": { "text": "Feed P80: {[Tags]/Slurry_In/Feed_P80} µm" } }
+            ]
+          },
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_PB_001" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "180px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "2px solid #0EA5E9"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "PB_001 (Pump Box)", "style": { "fontWeight": "bold", "color": "#38BDF8" } } },
+              { "type": "ia.display.label", "props": { "text": "Fresh: {[Tags]/PB_001/Inflow_Fresh} t/h" } },
+              { "type": "ia.display.label", "props": { "text": "Recycle: {[Tags]/PB_001/Inflow_Recycle} t/h" } }
+            ]
+          },
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_SP_001" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "180px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "1px solid #475569"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "SP_001 (Pump)", "style": { "fontWeight": "bold", "color": "#F8FAFC" } } },
+              { "type": "ia.display.label", "props": { "text": "Flow: {[Tags]/SP_001/Discharge_Flow} t/h" } }
+            ]
+          },
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_CY_001" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "200px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "2px solid #A855F7"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "CY_001 (Hydrocyclone)", "style": { "fontWeight": "bold", "color": "#C084FC" } } },
+              { "type": "ia.display.label", "props": { "text": "Target Cut: 160.0 µm" } },
+              { "type": "ia.display.label", "props": { "text": "Underflow P80: {[Tags]/CY_001/Underflow_P80} µm" } }
+            ]
+          },
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_BM_001" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "200px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "2px solid #EAB308"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "BM_001 (Ball Mill)", "style": { "fontWeight": "bold", "color": "#FACC15" } } },
+              { "type": "ia.display.label", "props": { "text": "Target P80: 160.0 µm" } },
+              { "type": "ia.display.label", "props": { "text": "Discharge P80: {[Tags]/BM_001/Discharge_P80} µm" } }
+            ]
+          },
+          {
+            "type": "ia.container.flex",
+            "meta": { "name": "Node_Slurry_Out" },
+            "props": {
+              "direction": "column",
+              "style": {
+                "width": "180px",
+                "padding": "16px",
+                "backgroundColor": "#1E293B",
+                "borderRadius": "8px",
+                "border": "2px solid #22C55E"
+              }
+            },
+            "children": [
+              { "type": "ia.display.label", "props": { "text": "Slurry_Out (Flotation)", "style": { "fontWeight": "bold", "color": "#4ADE80" } } },
+              { "type": "ia.display.label", "props": { "text": "Flow: {[Tags]/Slurry_Out/Output_Solid_Flow} t/h" } },
+              { "type": "ia.display.label", "props": { "text": "Output P80: {[Tags]/Slurry_Out/Output_P80} µm" } }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

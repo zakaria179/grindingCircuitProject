@@ -5,13 +5,19 @@ Hi Zineb! This guide is updated after every push to make sure you can safely clo
 ---
 
 ## 📌 Current Project Status
-- **Current Phase**: **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)** (Done `[x]`)
-- **Services Ready**: Mosquitto (MQTT), Neo4j (Graph DB), MinIO (Object Storage), and `replay-service` (SysCAD CSV MQTT Replay Engine live streaming `data.csv`).
-- **Data File**: Place your SysCAD CSV export file inside the `replay-service/` directory (e.g. `replay-service/syscad_export.csv`).
+- **Current Phase**: **Phase 02 - 2D visualization (Ignition Maker Edition)** (Done `[x]`)
+- **Services Ready**: Mosquitto (MQTT), Neo4j (Graph DB), MinIO (Object Storage), `replay-service` (SysCAD CSV replay), and Ignition Gateway (`:8088`).
 
 ---
 
-## 🛠️ Prerequisites for Windows
+## 🛠️ Service Access URLs
+
+| Service | URL | Credentials |
+| :--- | :--- | :--- |
+| **Ignition SCADA Gateway** (2D HMI) | [http://localhost:8088](http://localhost:8088) | User: `admin`<br>Password: `changeme123` |
+| **Neo4j Browser** (Graph DB) | [http://localhost:7474](http://localhost:7474) | User: `neo4j`<br>Password: `changeme123` |
+| **MinIO Console** (Object Storage) | [http://localhost:9091](http://localhost:9091) | User: `minioadmin`<br>Password: `minioadmin` |
+| **Mosquitto MQTT** | `localhost:1883` (MQTT)<br>`localhost:9001` (WebSockets) | *No Web UI* |
 
 1. **Docker Desktop for Windows**
    - Download & install [Docker Desktop](https://www.docker.com/products/docker-desktop/).

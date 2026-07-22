@@ -48,6 +48,24 @@ services:
       - mosquitto
     restart: unless-stopped
 
+  # 2D HMI / SCADA visualization (Ignition Maker Edition) - subscribes to Mosquitto MQTT and provides 2D Perspective views in Phase 02
+  ignition:
+    image: kcollins/ignition:8.1.33
+    container_name: ignition
+    ports:
+      - "8088:8088"
+      - "8043:8043"
+    environment:
+      # Dev-only placeholder credentials (not for production use)
+      - ACCEPT_IGNITION_EULA=Y
+      # - IGNITION_EDITION=maker # Optional: add IGNITION_MAKER_LICENSE_KEY and IGNITION_MAKER_ACTIVATION_TOKEN if using Maker license
+      - GATEWAY_ADMIN_USERNAME=admin
+      - GATEWAY_ADMIN_PASSWORD=changeme123
+    volumes:
+      - ignition_data:/usr/local/bin/ignition/data
+    restart: unless-stopped
+
 volumes:
   neo4j_data:
   minio_data:
+  ignition_data:
