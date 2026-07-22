@@ -1,0 +1,53 @@
+services:
+  # MQTT broker - will route dynamic sensor readings between replay-service and 2D/3D visualizations in Phase 01+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./broker/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
+
+  # Graph database - will store knowledge graph and Asset Administration Shell (AAS) relationships in Phase 04
+  neo4j:
+    image: neo4j:community
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # Dev-only placeholder password
+      - NEO4J_AUTH=neo4j/changeme123
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+
+  # Object storage - will store raw CSV exports, 3D models, and historical artifacts in Phase 01+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9091:9001"
+    environment:
+      # Dev-only placeholder credentials
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  # CSV replay service - will test CSV-replay connections in Phase 01 and feed data to viz-2d/3d
+  replay-service:
+    build: ./replay-service
+    container_name: replay-service
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
+  minio_data:
