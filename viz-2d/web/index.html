@@ -10,13 +10,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
   <style>
     :root {
-      --bg-dark: #0b0f17;
-      --panel-bg: rgba(18, 26, 41, 0.85);
-      --border-color: rgba(56, 189, 248, 0.2);
+      --bg-dark: #090d16;
+      --panel-bg: rgba(15, 23, 42, 0.9);
+      --border-color: rgba(56, 189, 248, 0.25);
       --primary: #38bdf8;
-      --accent: #a855f7;
+      --accent: #c084fc;
       --success: #22c55e;
-      --warning: #eab308;
+      --warning: #facc15;
       --danger: #ef4444;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -36,9 +36,9 @@
 
     header {
       background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
+      padding: 0.85rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -60,13 +60,13 @@
       letter-spacing: 1px;
     }
 
-    h1 { font-size: 1.25rem; font-weight: 600; color: var(--primary); }
+    h1 { font-size: 1.2rem; font-weight: 600; color: var(--primary); }
 
     .status-bar {
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 0.9rem;
+      gap: 20px;
+      font-size: 0.85rem;
     }
 
     .connection-status {
@@ -97,21 +97,20 @@
 
     main {
       flex: 1;
-      padding: 2rem;
-      position: relative;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    /* Flowsheet Diagram Grid */
     .flowsheet-canvas {
       position: relative;
-      width: 100%;
-      max-width: 1400px;
-      height: 620px;
-      margin: 0 auto;
+      width: 1350px;
+      height: 640px;
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       backdrop-filter: blur(12px);
       overflow: hidden;
     }
@@ -128,91 +127,121 @@
     }
 
     .pipe-path {
-      stroke: rgba(56, 189, 248, 0.3);
-      stroke-width: 6;
+      stroke: rgba(56, 189, 248, 0.25);
+      stroke-width: 8;
       fill: none;
       stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .pipe-flow {
       stroke: var(--primary);
-      stroke-width: 6;
+      stroke-width: 8;
       fill: none;
-      stroke-dasharray: 12 12;
+      stroke-dasharray: 14 14;
       animation: dash 1s linear infinite;
     }
 
     .recycle-flow {
       stroke: var(--accent);
-      stroke-width: 6;
+      stroke-width: 8;
       fill: none;
-      stroke-dasharray: 12 12;
-      animation: dash 0.8s linear reverse infinite;
+      stroke-dasharray: 14 14;
+      animation: dash 0.8s linear infinite;
     }
 
     @keyframes dash {
-      to { stroke-dashoffset: -24; }
+      to { stroke-dashoffset: -28; }
     }
 
-    /* Equipment Node Cards */
-    .equip-card {
+    /* Equipment Container Cards */
+    .equip-node {
       position: absolute;
       z-index: 2;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 1.25rem;
-      width: 220px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease;
     }
 
-    .equip-card:hover {
+    .equip-node:hover {
       transform: translateY(-4px);
-      border-color: var(--primary);
+    }
+
+    .svg-symbol {
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+    }
+
+    .equip-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.85rem;
+      width: 210px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-top: 8px;
     }
 
     .equip-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.35rem;
     }
 
-    .equip-title { font-weight: 700; font-size: 1rem; color: var(--primary); }
-    .equip-tag { font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 6px; border-radius: 4px; }
+    .equip-title { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
+    .equip-tag { font-size: 0.7rem; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 6px; border-radius: 4px; }
 
     .metric-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
-      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
     }
 
     .metric-label { color: var(--text-muted); }
     .metric-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text-main); }
     .target-highlight { color: var(--success); font-weight: 700; }
-    .warning-highlight { color: var(--warning); }
 
-    /* Node Positioning */
-    #card-slurry-in { top: 220px; left: 40px; }
-    #card-pb-001    { top: 220px; left: 320px; border-color: rgba(56, 189, 248, 0.4); }
-    #card-sp-001    { top: 220px; left: 600px; }
-    #card-cy-001    { top: 60px;  left: 880px; border-color: rgba(168, 85, 247, 0.5); }
-    #card-bm-001    { top: 380px; left: 880px; border-color: rgba(234, 179, 8, 0.5); }
-    #card-slurry-out{ top: 60px;  left: 1140px; border-color: rgba(34, 197, 94, 0.5); }
+    /* Specific Equipment Node Positions */
+    #node-slurry-in { top: 220px; left: 30px; }
+    #node-pb-001    { top: 220px; left: 240px; }
+    #node-sp-001    { top: 220px; left: 470px; }
+    #node-bm-001    { top: 220px; left: 700px; }
+    #node-cy-001    { top: 60px;  left: 950px; }
+    #node-slurry-out{ top: 60px;  left: 1180px; }
+
+    /* Animated Ball Mill Spin */
+    @keyframes spinMill {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .mill-gear {
+      transform-origin: 40px 40px;
+      animation: spinMill 8s linear infinite;
+    }
+
+    /* Animated Pump Impeller */
+    @keyframes spinImpeller {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .pump-impeller {
+      transform-origin: 30px 30px;
+      animation: spinImpeller 2s linear infinite;
+    }
 
     .target-badge {
       background: rgba(34, 197, 94, 0.15);
       border: 1px solid var(--success);
       color: var(--success);
-      font-size: 0.75rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      margin-top: 8px;
+      font-size: 0.7rem;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
       text-align: center;
       font-weight: 600;
     }
@@ -223,7 +252,7 @@
   <header>
     <div class="logo-container">
       <span class="ocp-badge">OCP</span>
-      <h1>Phosphate Ore Grinding Circuit — 2D SCADA Synoptic</h1>
+      <h1>Phosphate Ore Grinding Circuit — 2D P&ID Synoptic</h1>
     </div>
     <div class="status-bar">
       <div>Target P80 Cut: <strong style="color:var(--success);">160.0 µm</strong></div>
@@ -237,99 +266,151 @@
   <main>
     <div class="flowsheet-canvas">
       
-      <!-- SVG Connecting Pipes -->
+      <!-- SVG Connecting Pipes (Exact Topology: Slurry_In -> PB_001 -> SP_001 -> BM_001 -> CY_001 -> Slurry_Out + CY_001 Underflow Recycle -> PB_001) -->
       <svg class="pipes-svg">
-        <!-- Slurry_In -> PB_001 -->
-        <path class="pipe-path" d="M 260 270 L 320 270" />
-        <path class="pipe-flow" d="M 260 270 L 320 270" />
+        <!-- 1. Slurry_In -> PB_001 -->
+        <path class="pipe-path" d="M 180 270 L 240 270" />
+        <path class="pipe-flow" d="M 180 270 L 240 270" />
 
-        <!-- PB_001 -> SP_001 -->
-        <path class="pipe-path" d="M 540 270 L 600 270" />
-        <path class="pipe-flow" d="M 540 270 L 600 270" />
+        <!-- 2. PB_001 -> SP_001 -->
+        <path class="pipe-path" d="M 410 270 L 470 270" />
+        <path class="pipe-flow" d="M 410 270 L 470 270" />
 
-        <!-- SP_001 -> CY_001 -->
-        <path class="pipe-path" d="M 820 270 L 850 270 L 850 110 L 880 110" />
-        <path class="pipe-flow" d="M 820 270 L 850 270 L 850 110 L 880 110" />
+        <!-- 3. SP_001 -> BM_001 -->
+        <path class="pipe-path" d="M 640 270 L 700 270" />
+        <path class="pipe-flow" d="M 640 270 L 700 270" />
 
-        <!-- CY_001 (Overflow) -> Slurry_Out -->
-        <path class="pipe-path" d="M 1100 110 L 1140 110" />
-        <path class="pipe-flow" d="M 1100 110 L 1140 110" />
+        <!-- 4. BM_001 -> CY_001 -->
+        <path class="pipe-path" d="M 870 270 L 920 270 L 920 110 L 950 110" />
+        <path class="pipe-flow" d="M 870 270 L 920 270 L 920 110 L 950 110" />
 
-        <!-- CY_001 (Underflow Recycle) -> BM_001 -->
-        <path class="pipe-path" d="M 990 190 L 990 380" />
-        <path class="recycle-flow" d="M 990 190 L 990 380" />
+        <!-- 5. CY_001 (Overflow / Accept) -> Slurry_Out -->
+        <path class="pipe-path" d="M 1120 110 L 1180 110" />
+        <path class="pipe-flow" d="M 1120 110 L 1180 110" />
 
-        <!-- BM_001 (Discharge) -> PB_001 Recycle Loop -->
-        <path class="pipe-path" d="M 880 440 L 430 440 L 430 350" />
-        <path class="recycle-flow" d="M 880 440 L 430 440 L 430 350" />
+        <!-- 6. CY_001 (Underflow / Coarse Recycle) -> PB_001 -->
+        <!-- Route: From bottom of CY_001 down to L 1035 520, left to L 320 520, up to bottom of PB_001 -->
+        <path class="pipe-path" d="M 1035 220 L 1035 530 L 320 530 L 320 370" />
+        <path class="recycle-flow" d="M 1035 220 L 1035 530 L 320 530 L 320 370" />
       </svg>
 
-      <!-- Equipment Cards -->
+      <!-- Equipment P&ID Graphic Nodes -->
 
       <!-- 1. Slurry In -->
-      <div class="equip-card" id="card-slurry-in">
-        <div class="equip-header">
-          <span class="equip-title">Slurry_In</span>
-          <span class="equip-tag">FEED</span>
+      <div class="equip-node" id="node-slurry-in">
+        <svg class="svg-symbol" width="60" height="50" viewBox="0 0 60 50">
+          <polygon points="5,15 35,15 35,5 55,25 35,45 35,35 5,35" fill="#38bdf8" />
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">Slurry_In</span>
+            <span class="equip-tag">FEED</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Feed Flow:</span><span class="metric-val" id="val-feed-flow">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Feed BPL:</span><span class="metric-val" id="val-feed-bpl">-- %</span></div>
+          <div class="metric-row"><span class="metric-label">Feed P80:</span><span class="metric-val" id="val-feed-p80">-- µm</span></div>
         </div>
-        <div class="metric-row"><span class="metric-label">Feed Flow:</span><span class="metric-val" id="val-feed-flow">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Feed BPL:</span><span class="metric-val" id="val-feed-bpl">-- %</span></div>
-        <div class="metric-row"><span class="metric-label">Feed P80:</span><span class="metric-val" id="val-feed-p80">-- µm</span></div>
-        <div class="metric-row"><span class="metric-label">Solids:</span><span class="metric-val" id="val-feed-solids">-- %</span></div>
       </div>
 
-      <!-- 2. PB_001 (Pump Box) -->
-      <div class="equip-card" id="card-pb-001">
-        <div class="equip-header">
-          <span class="equip-title">PB_001</span>
-          <span class="equip-tag">PUMP BOX</span>
+      <!-- 2. PB_001 (Pump Box / Sump Vessel) -->
+      <div class="equip-node" id="node-pb-001">
+        <svg class="svg-symbol" width="70" height="60" viewBox="0 0 70 60">
+          <!-- Sump Tank Shell -->
+          <rect x="5" y="10" width="60" height="45" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="3" />
+          <!-- Animated Fluid Level -->
+          <rect x="8" y="25" width="54" height="27" fill="rgba(56, 189, 248, 0.4)" />
+          <path d="M 8 25 Q 20 22 35 25 T 62 25 L 62 52 L 8 52 Z" fill="#38bdf8" opacity="0.6" />
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">PB_001</span>
+            <span class="equip-tag">PUMP BOX</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Fresh Inflow:</span><span class="metric-val" id="val-pb-fresh">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Recycle Inflow:</span><span class="metric-val" id="val-pb-recycle">-- t/h</span></div>
+          <div class="target-badge">Recycle Loop Active</div>
         </div>
-        <div class="metric-row"><span class="metric-label">Fresh Inflow:</span><span class="metric-val" id="val-pb-fresh">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Recycle Inflow:</span><span class="metric-val" id="val-pb-recycle">-- t/h</span></div>
-        <div class="target-badge">Recycle Loop Active</div>
       </div>
 
-      <!-- 3. SP_001 (Pump) -->
-      <div class="equip-card" id="card-sp-001">
-        <div class="equip-header">
-          <span class="equip-title">SP_001</span>
-          <span class="equip-tag">PUMP</span>
+      <!-- 3. SP_001 (Centrifugal Slurry Pump) -->
+      <div class="equip-node" id="node-sp-001">
+        <svg class="svg-symbol" width="60" height="60" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="24" fill="#1e293b" stroke="#38bdf8" stroke-width="3" />
+          <g class="pump-impeller">
+            <line x1="30" y1="10" x2="30" y2="50" stroke="#38bdf8" stroke-width="3" />
+            <line x1="10" y1="30" x2="50" y2="30" stroke="#38bdf8" stroke-width="3" />
+          </g>
+          <circle cx="30" cy="30" r="6" fill="#090d16" stroke="#38bdf8" stroke-width="2" />
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">SP_001</span>
+            <span class="equip-tag">PUMP</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Discharge Flow:</span><span class="metric-val" id="val-sp-flow">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Cyclone Feed BPL:</span><span class="metric-val" id="val-sp-bpl">-- %</span></div>
         </div>
-        <div class="metric-row"><span class="metric-label">Cyclone Feed Flow:</span><span class="metric-val" id="val-sp-flow">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Cyclone Feed BPL:</span><span class="metric-val" id="val-sp-bpl">-- %</span></div>
       </div>
 
-      <!-- 4. CY_001 (Hydrocyclone) -->
-      <div class="equip-card" id="card-cy-001">
-        <div class="equip-header">
-          <span class="equip-title">CY_001</span>
-          <span class="equip-tag">CYCLONE</span>
+      <!-- 4. BM_001 (Rotating Ball Mill Drum) -->
+      <div class="equip-node" id="node-bm-001">
+        <svg class="svg-symbol" width="80" height="60" viewBox="0 0 80 60">
+          <!-- Cylinder Drum Body -->
+          <rect x="10" y="12" width="60" height="36" rx="6" fill="#1e293b" stroke="#facc15" stroke-width="3" />
+          <line x1="10" y1="30" x2="70" y2="30" stroke="#facc15" stroke-width="1.5" stroke-dasharray="4 4" />
+          <!-- Rotating Gear Wheel -->
+          <g class="mill-gear">
+            <circle cx="40" cy="30" r="14" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="6 3" />
+          </g>
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">BM_001</span>
+            <span class="equip-tag">BALL MILL</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Discharge Flow:</span><span class="metric-val" id="val-bm-flow">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Discharge P80:</span><span class="metric-val target-highlight" id="val-bm-p80">-- µm</span></div>
+          <div class="target-badge">Target P80: 160.0 µm</div>
         </div>
-        <div class="metric-row"><span class="metric-label">Underflow Flow:</span><span class="metric-val" id="val-cy-uf-flow">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Underflow P80:</span><span class="metric-val" id="val-cy-uf-p80">-- µm</span></div>
-        <div class="target-badge">Target Cut: 160.0 µm</div>
       </div>
 
-      <!-- 5. BM_001 (Ball Mill) -->
-      <div class="equip-card" id="card-bm-001">
-        <div class="equip-header">
-          <span class="equip-title">BM_001</span>
-          <span class="equip-tag">BALL MILL</span>
+      <!-- 5. CY_001 (Conical Hydrocyclone Cluster) -->
+      <div class="equip-node" id="node-cy-001">
+        <svg class="svg-symbol" width="60" height="70" viewBox="0 0 60 70">
+          <!-- Cylindrical Upper Section -->
+          <rect x="15" y="5" width="30" height="20" fill="#1e293b" stroke="#c084fc" stroke-width="3" />
+          <!-- Conical Lower Section -->
+          <polygon points="15,25 45,25 30,60" fill="#1e293b" stroke="#c084fc" stroke-width="3" />
+          <!-- Overflow Tube -->
+          <line x1="30" y1="0" x2="30" y2="5" stroke="#22c55e" stroke-width="4" />
+          <!-- Underflow Outlet -->
+          <line x1="30" y1="60" x2="30" y2="68" stroke="#c084fc" stroke-width="4" />
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">CY_001</span>
+            <span class="equip-tag">CYCLONE</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Underflow Flow:</span><span class="metric-val" id="val-cy-uf-flow">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Underflow P80:</span><span class="metric-val" id="val-cy-uf-p80">-- µm</span></div>
+          <div class="target-badge">Target Cut: 160.0 µm</div>
         </div>
-        <div class="metric-row"><span class="metric-label">Discharge Flow:</span><span class="metric-val" id="val-bm-flow">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Discharge P80:</span><span class="metric-val target-highlight" id="val-bm-p80">-- µm</span></div>
-        <div class="target-badge">Target P80: 160.0 µm</div>
       </div>
 
       <!-- 6. Slurry Out -->
-      <div class="equip-card" id="card-slurry-out">
-        <div class="equip-header">
-          <span class="equip-title">Slurry_Out</span>
-          <span class="equip-tag">OUTPUT</span>
+      <div class="equip-node" id="node-slurry-out">
+        <svg class="svg-symbol" width="60" height="50" viewBox="0 0 60 50">
+          <polygon points="5,15 35,15 35,5 55,25 35,45 35,35 5,35" fill="#22c55e" />
+        </svg>
+        <div class="equip-card">
+          <div class="equip-header">
+            <span class="equip-title">Slurry_Out</span>
+            <span class="equip-tag">FLOTATION</span>
+          </div>
+          <div class="metric-row"><span class="metric-label">Output Flow:</span><span class="metric-val" id="val-out-flow">-- t/h</span></div>
+          <div class="metric-row"><span class="metric-label">Output BPL:</span><span class="metric-val" id="val-out-bpl">-- %</span></div>
+          <div class="metric-row"><span class="metric-label">Output P80:</span><span class="metric-val target-highlight" id="val-out-p80">-- µm</span></div>
         </div>
-        <div class="metric-row"><span class="metric-label">Output Flow:</span><span class="metric-val" id="val-out-flow">-- t/h</span></div>
-        <div class="metric-row"><span class="metric-label">Output BPL:</span><span class="metric-val" id="val-out-bpl">-- %</span></div>
-        <div class="metric-row"><span class="metric-label">Output P80:</span><span class="metric-val target-highlight" id="val-out-p80">-- µm</span></div>
       </div>
 
     </div>
@@ -355,7 +436,6 @@
         if (data["Feed Solid Flow"] !== undefined) document.getElementById("val-feed-flow").innerText = data["Feed Solid Flow"] + " t/h";
         if (data["Feed BPL"] !== undefined) document.getElementById("val-feed-bpl").innerText = data["Feed BPL"] + " %";
         if (data["Feed P80"] !== undefined) document.getElementById("val-feed-p80").innerText = data["Feed P80"] + " µm";
-        if (data["Feed Solid Fraction"] !== undefined) document.getElementById("val-feed-solids").innerText = data["Feed Solid Fraction"] + " %";
 
         // PB_001
         if (data["Feed Solid Flow"] !== undefined) document.getElementById("val-pb-fresh").innerText = data["Feed Solid Flow"] + " t/h";
@@ -365,13 +445,13 @@
         if (data["Cyclone Feed Solid Flow"] !== undefined) document.getElementById("val-sp-flow").innerText = data["Cyclone Feed Solid Flow"] + " t/h";
         if (data["Cyclone Feed BPL"] !== undefined) document.getElementById("val-sp-bpl").innerText = data["Cyclone Feed BPL"] + " %";
 
-        // CY_001
-        if (data["Cyclone Underflow Solid Flow"] !== undefined) document.getElementById("val-cy-uf-flow").innerText = data["Cyclone Underflow Solid Flow"] + " t/h";
-        if (data["Cyclone Underflow P80"] !== undefined) document.getElementById("val-cy-uf-p80").innerText = data["Cyclone Underflow P80"] + " µm";
-
         // BM_001
         if (data["Ball Mill Discharge Solid Flow"] !== undefined) document.getElementById("val-bm-flow").innerText = data["Ball Mill Discharge Solid Flow"] + " t/h";
         if (data["Ball Mill Discharge P80"] !== undefined) document.getElementById("val-bm-p80").innerText = data["Ball Mill Discharge P80"] + " µm";
+
+        // CY_001
+        if (data["Cyclone Underflow Solid Flow"] !== undefined) document.getElementById("val-cy-uf-flow").innerText = data["Cyclone Underflow Solid Flow"] + " t/h";
+        if (data["Cyclone Underflow P80"] !== undefined) document.getElementById("val-cy-uf-p80").innerText = data["Cyclone Underflow P80"] + " µm";
 
         // Slurry Out
         if (data["Output Slurry Solid Flow"] !== undefined) document.getElementById("val-out-flow").innerText = data["Output Slurry Solid Flow"] + " t/h";
