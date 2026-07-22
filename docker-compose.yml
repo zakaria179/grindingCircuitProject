@@ -65,6 +65,18 @@ services:
       - ignition_data:/usr/local/bin/ignition/data
     restart: unless-stopped
 
+  # 2D SCADA Web Viewer - provides instant browser viewing for 2D synoptic flowsheet on port 8080
+  viz-2d-web:
+    image: nginx:alpine
+    container_name: viz-2d-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./viz-2d/web:/usr/share/nginx/html:ro
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
 volumes:
   neo4j_data:
   minio_data:

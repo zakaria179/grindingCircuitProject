@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCP Grinding Circuit — 2D SCADA Synoptic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0b0f17;
+      --panel-bg: rgba(18, 26, 41, 0.85);
+      --border-color: rgba(56, 189, 248, 0.2);
+      --primary: #38bdf8;
+      --accent: #a855f7;
+      --success: #22c55e;
+      --warning: #eab308;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ocp-badge {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    h1 { font-size: 1.25rem; font-weight: 600; color: var(--primary); }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.9rem;
+    }
+
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--success);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Flowsheet Diagram Grid */
+    .flowsheet-canvas {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      height: 620px;
+      margin: 0 auto;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    /* SVG Overlay for Dynamic Pipes & Flow Animation */
+    .pipes-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .pipe-path {
+      stroke: rgba(56, 189, 248, 0.3);
+      stroke-width: 6;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    .pipe-flow {
+      stroke: var(--primary);
+      stroke-width: 6;
+      fill: none;
+      stroke-dasharray: 12 12;
+      animation: dash 1s linear infinite;
+    }
+
+    .recycle-flow {
+      stroke: var(--accent);
+      stroke-width: 6;
+      fill: none;
+      stroke-dasharray: 12 12;
+      animation: dash 0.8s linear reverse infinite;
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -24; }
+    }
+
+    /* Equipment Node Cards */
+    .equip-card {
+      position: absolute;
+      z-index: 2;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      width: 220px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .equip-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .equip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.5rem;
+    }
+
+    .equip-title { font-weight: 700; font-size: 1rem; color: var(--primary); }
+    .equip-tag { font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 6px; border-radius: 4px; }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .metric-label { color: var(--text-muted); }
+    .metric-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text-main); }
+    .target-highlight { color: var(--success); font-weight: 700; }
+    .warning-highlight { color: var(--warning); }
+
+    /* Node Positioning */
+    #card-slurry-in { top: 220px; left: 40px; }
+    #card-pb-001    { top: 220px; left: 320px; border-color: rgba(56, 189, 248, 0.4); }
+    #card-sp-001    { top: 220px; left: 600px; }
+    #card-cy-001    { top: 60px;  left: 880px; border-color: rgba(168, 85, 247, 0.5); }
+    #card-bm-001    { top: 380px; left: 880px; border-color: rgba(234, 179, 8, 0.5); }
+    #card-slurry-out{ top: 60px;  left: 1140px; border-color: rgba(34, 197, 94, 0.5); }
+
+    .target-badge {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <span class="ocp-badge">OCP</span>
+      <h1>Phosphate Ore Grinding Circuit — 2D SCADA Synoptic</h1>
+    </div>
+    <div class="status-bar">
+      <div>Target P80 Cut: <strong style="color:var(--success);">160.0 µm</strong></div>
+      <div class="connection-status">
+        <div class="status-dot"></div>
+        <span id="conn-text">MQTT Live Replay Connected</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="flowsheet-canvas">
+      
+      <!-- SVG Connecting Pipes -->
+      <svg class="pipes-svg">
+        <!-- Slurry_In -> PB_001 -->
+        <path class="pipe-path" d="M 260 270 L 320 270" />
+        <path class="pipe-flow" d="M 260 270 L 320 270" />
+
+        <!-- PB_001 -> SP_001 -->
+        <path class="pipe-path" d="M 540 270 L 600 270" />
+        <path class="pipe-flow" d="M 540 270 L 600 270" />
+
+        <!-- SP_001 -> CY_001 -->
+        <path class="pipe-path" d="M 820 270 L 850 270 L 850 110 L 880 110" />
+        <path class="pipe-flow" d="M 820 270 L 850 270 L 850 110 L 880 110" />
+
+        <!-- CY_001 (Overflow) -> Slurry_Out -->
+        <path class="pipe-path" d="M 1100 110 L 1140 110" />
+        <path class="pipe-flow" d="M 1100 110 L 1140 110" />
+
+        <!-- CY_001 (Underflow Recycle) -> BM_001 -->
+        <path class="pipe-path" d="M 990 190 L 990 380" />
+        <path class="recycle-flow" d="M 990 190 L 990 380" />
+
+        <!-- BM_001 (Discharge) -> PB_001 Recycle Loop -->
+        <path class="pipe-path" d="M 880 440 L 430 440 L 430 350" />
+        <path class="recycle-flow" d="M 880 440 L 430 440 L 430 350" />
+      </svg>
+
+      <!-- Equipment Cards -->
+
+      <!-- 1. Slurry In -->
+      <div class="equip-card" id="card-slurry-in">
+        <div class="equip-header">
+          <span class="equip-title">Slurry_In</span>
+          <span class="equip-tag">FEED</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Feed Flow:</span><span class="metric-val" id="val-feed-flow">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Feed BPL:</span><span class="metric-val" id="val-feed-bpl">-- %</span></div>
+        <div class="metric-row"><span class="metric-label">Feed P80:</span><span class="metric-val" id="val-feed-p80">-- µm</span></div>
+        <div class="metric-row"><span class="metric-label">Solids:</span><span class="metric-val" id="val-feed-solids">-- %</span></div>
+      </div>
+
+      <!-- 2. PB_001 (Pump Box) -->
+      <div class="equip-card" id="card-pb-001">
+        <div class="equip-header">
+          <span class="equip-title">PB_001</span>
+          <span class="equip-tag">PUMP BOX</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Fresh Inflow:</span><span class="metric-val" id="val-pb-fresh">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Recycle Inflow:</span><span class="metric-val" id="val-pb-recycle">-- t/h</span></div>
+        <div class="target-badge">Recycle Loop Active</div>
+      </div>
+
+      <!-- 3. SP_001 (Pump) -->
+      <div class="equip-card" id="card-sp-001">
+        <div class="equip-header">
+          <span class="equip-title">SP_001</span>
+          <span class="equip-tag">PUMP</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Cyclone Feed Flow:</span><span class="metric-val" id="val-sp-flow">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Cyclone Feed BPL:</span><span class="metric-val" id="val-sp-bpl">-- %</span></div>
+      </div>
+
+      <!-- 4. CY_001 (Hydrocyclone) -->
+      <div class="equip-card" id="card-cy-001">
+        <div class="equip-header">
+          <span class="equip-title">CY_001</span>
+          <span class="equip-tag">CYCLONE</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Underflow Flow:</span><span class="metric-val" id="val-cy-uf-flow">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Underflow P80:</span><span class="metric-val" id="val-cy-uf-p80">-- µm</span></div>
+        <div class="target-badge">Target Cut: 160.0 µm</div>
+      </div>
+
+      <!-- 5. BM_001 (Ball Mill) -->
+      <div class="equip-card" id="card-bm-001">
+        <div class="equip-header">
+          <span class="equip-title">BM_001</span>
+          <span class="equip-tag">BALL MILL</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Discharge Flow:</span><span class="metric-val" id="val-bm-flow">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Discharge P80:</span><span class="metric-val target-highlight" id="val-bm-p80">-- µm</span></div>
+        <div class="target-badge">Target P80: 160.0 µm</div>
+      </div>
+
+      <!-- 6. Slurry Out -->
+      <div class="equip-card" id="card-slurry-out">
+        <div class="equip-header">
+          <span class="equip-title">Slurry_Out</span>
+          <span class="equip-tag">OUTPUT</span>
+        </div>
+        <div class="metric-row"><span class="metric-label">Output Flow:</span><span class="metric-val" id="val-out-flow">-- t/h</span></div>
+        <div class="metric-row"><span class="metric-label">Output BPL:</span><span class="metric-val" id="val-out-bpl">-- %</span></div>
+        <div class="metric-row"><span class="metric-label">Output P80:</span><span class="metric-val target-highlight" id="val-out-p80">-- µm</span></div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const brokerHost = window.location.hostname || "localhost";
+    const brokerPort = 9001; // Mosquitto WebSockets port
+    const client = new Paho.MQTT.Client(brokerHost, Number(brokerPort), "web_2d_synoptic_" + Math.random().toString(16).substr(2, 8));
+
+    client.onConnectionLost = function (responseObject) {
+      document.getElementById("conn-text").innerText = "MQTT Disconnected — Retrying...";
+      document.querySelector(".status-dot").style.background = "#ef4444";
+      setTimeout(connectMQTT, 3000);
+    };
+
+    client.onMessageArrived = function (message) {
+      try {
+        const payload = JSON.parse(message.payloadString);
+        const data = payload.telemetry || payload.metrics || {};
+        
+        // Slurry In
+        if (data["Feed Solid Flow"] !== undefined) document.getElementById("val-feed-flow").innerText = data["Feed Solid Flow"] + " t/h";
+        if (data["Feed BPL"] !== undefined) document.getElementById("val-feed-bpl").innerText = data["Feed BPL"] + " %";
+        if (data["Feed P80"] !== undefined) document.getElementById("val-feed-p80").innerText = data["Feed P80"] + " µm";
+        if (data["Feed Solid Fraction"] !== undefined) document.getElementById("val-feed-solids").innerText = data["Feed Solid Fraction"] + " %";
+
+        // PB_001
+        if (data["Feed Solid Flow"] !== undefined) document.getElementById("val-pb-fresh").innerText = data["Feed Solid Flow"] + " t/h";
+        if (data["Cyclone Underflow Solid Flow"] !== undefined) document.getElementById("val-pb-recycle").innerText = data["Cyclone Underflow Solid Flow"] + " t/h";
+
+        // SP_001
+        if (data["Cyclone Feed Solid Flow"] !== undefined) document.getElementById("val-sp-flow").innerText = data["Cyclone Feed Solid Flow"] + " t/h";
+        if (data["Cyclone Feed BPL"] !== undefined) document.getElementById("val-sp-bpl").innerText = data["Cyclone Feed BPL"] + " %";
+
+        // CY_001
+        if (data["Cyclone Underflow Solid Flow"] !== undefined) document.getElementById("val-cy-uf-flow").innerText = data["Cyclone Underflow Solid Flow"] + " t/h";
+        if (data["Cyclone Underflow P80"] !== undefined) document.getElementById("val-cy-uf-p80").innerText = data["Cyclone Underflow P80"] + " µm";
+
+        // BM_001
+        if (data["Ball Mill Discharge Solid Flow"] !== undefined) document.getElementById("val-bm-flow").innerText = data["Ball Mill Discharge Solid Flow"] + " t/h";
+        if (data["Ball Mill Discharge P80"] !== undefined) document.getElementById("val-bm-p80").innerText = data["Ball Mill Discharge P80"] + " µm";
+
+        // Slurry Out
+        if (data["Output Slurry Solid Flow"] !== undefined) document.getElementById("val-out-flow").innerText = data["Output Slurry Solid Flow"] + " t/h";
+        if (data["Output Slurry BPL"] !== undefined) document.getElementById("val-out-bpl").innerText = data["Output Slurry BPL"] + " %";
+        if (data["Output Slurry P80"] !== undefined) document.getElementById("val-out-p80").innerText = data["Output Slurry P80"] + " µm";
+
+      } catch (err) {
+        console.error("Error parsing MQTT payload:", err);
+      }
+    };
+
+    function connectMQTT() {
+      client.connect({
+        onSuccess: function () {
+          document.getElementById("conn-text").innerText = "MQTT Live Stream Active";
+          document.querySelector(".status-dot").style.background = "#22c55e";
+          client.subscribe("ocp/grinding/#");
+        },
+        onFailure: function (e) {
+          console.error("MQTT Connect failed:", e);
+          document.getElementById("conn-text").innerText = "MQTT Connection Error";
+          document.querySelector(".status-dot").style.background = "#ef4444";
+          setTimeout(connectMQTT, 3000);
+        }
+      });
+    }
+
+    connectMQTT();
+  </script>
+</body>
+</html>

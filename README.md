@@ -48,6 +48,7 @@ docker compose down
 
 Once services are running (`docker compose up -d`), access the following web interfaces:
 
-- **Neo4j Browser**: [http://localhost:7474](http://localhost:7474) (Credentials: `neo4j` / `changeme123`)
+- **2D SCADA Web HMI (Instant View)**: [http://localhost:8080](http://localhost:8080)
+- **Ignition Gateway (2D HMI Platform)**: [http://localhost:8088](http://localhost:8088) (Credentials: `admin` / `changeme123`)
 - **MinIO Console**: [http://localhost:9091](http://localhost:9091) (Credentials: `minioadmin` / `minioadmin`)
 - **Mosquitto MQTT Broker**: `localhost:1883` (MQTT) / `localhost:9001` (WebSockets) — *Note: Mosquitto has no web UI.*

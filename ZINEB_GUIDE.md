@@ -14,7 +14,8 @@ Hi Zineb! This guide is updated after every push to make sure you can safely clo
 
 | Service | URL | Credentials |
 | :--- | :--- | :--- |
-| **Ignition SCADA Gateway** (2D HMI) | [http://localhost:8088](http://localhost:8088) | User: `admin`<br>Password: `changeme123` |
+| **2D SCADA Web HMI** (Instant Browser View) | [http://localhost:8080](http://localhost:8080) | *No Login Required* |
+| **Ignition SCADA Gateway** (2D HMI Platform) | [http://localhost:8088](http://localhost:8088) | User: `admin`<br>Password: `changeme123` |
 | **Neo4j Browser** (Graph DB) | [http://localhost:7474](http://localhost:7474) | User: `neo4j`<br>Password: `changeme123` |
 | **MinIO Console** (Object Storage) | [http://localhost:9091](http://localhost:9091) | User: `minioadmin`<br>Password: `minioadmin` |
 | **Mosquitto MQTT** | `localhost:1883` (MQTT)<br>`localhost:9001` (WebSockets) | *No Web UI* |
