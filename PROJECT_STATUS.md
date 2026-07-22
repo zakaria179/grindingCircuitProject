@@ -19,9 +19,9 @@ This file is the single source of truth for the project build status. Always che
     - `PROJECT_STATUS.md` (Single source of truth for project status)
     - Empirical Docker verification passed cleanly (`docker compose up -d` & `docker compose ps` showed 4 containers running; HTTP 200 responses verified for Neo4j at `:7474` and MinIO at `:9091`). Containers stopped cleanly via `docker compose down`.
 
-- [~] **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)**
-  - **Status**: [~] In Progress
-  - **What exists right now**: Building Python MQTT replay service and SysCAD simulation dataset in `/replay-service`.
+- [x] **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)**
+  - **Status**: [x] Done
+  - **What exists right now**: `replay-service` with `data.csv` (482 SysCAD readings dataset) and Python MQTT replay service (`main.py`) streaming telemetry live to Mosquitto MQTT topics (`ocp/grinding/telemetry` & equipment-specific topics). Verified via container logs.
 
 - [ ] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
   - **Status**: [ ] Not Started
