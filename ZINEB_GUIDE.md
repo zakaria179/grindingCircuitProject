@@ -5,8 +5,9 @@ Hi Zineb! This guide is updated after every push to make sure you can safely clo
 ---
 
 ## 📌 Current Project Status
-- **Current Phase**: **Phase 00 - Foundation & Team Setup** (Done `[x]`)
-- **Services Ready**: Mosquitto (MQTT), Neo4j (Graph DB), MinIO (Object Storage), and `replay-service` (Python base container).
+- **Current Phase**: **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)** (In Progress `[~]`)
+- **Services Ready**: Mosquitto (MQTT), Neo4j (Graph DB), MinIO (Object Storage), and `replay-service` (SysCAD CSV MQTT Replay Engine).
+- **Data File**: Place your SysCAD CSV export file inside the `replay-service/` directory (e.g. `replay-service/syscad_export.csv`).
 
 ---
 

@@ -1,1 +1,1 @@
-# Dependencies for replay-service (Phase 01)
+paho-mqtt>=1.6.1
