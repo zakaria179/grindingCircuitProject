@@ -1,44 +1,65 @@
-# Grinding Circuit Project — Status & Roadmap
+# Grinding Circuit Project — Status & Detailed Phase Roadmap
 
 This file is the single source of truth for the project build status. Always check this file before creating or modifying code, and update it upon completing work.
 
 ---
 
-## Project Phase Roadmap
+## 📌 Detailed Phase Roadmap & Build Status
 
-- [x] **Phase 00 - Foundation & team setup**
-  - **Status**: [x] Done
-  - **What exists right now**:
-    - Complete folder structure (`/broker`, `/replay-service`, `/graph`, `/viz-2d`, `/viz-3d`, `/dashboard`, `/ai-ml`)
-    - `/ai-ml/README.md` (Parked placeholder for Phase 06)
-    - `/broker/mosquitto.conf` (Mosquitto MQTT configuration for dev)
-    - `/replay-service/Dockerfile`, `requirements.txt`, `main.py` (Placeholder container setup)
-    - `docker-compose.yml` (Orchestrates Mosquitto, Neo4j, MinIO, and replay-service)
-    - `README.md` (Project overview, roadmap, and running instructions)
-    - `ZINEB_GUIDE.md` (Windows setup & execution guide for team member Zineb)
-    - `PROJECT_STATUS.md` (Single source of truth for project status)
-    - Empirical Docker verification passed cleanly (`docker compose up -d` & `docker compose ps` showed 4 containers running; HTTP 200 responses verified for Neo4j at `:7474` and MinIO at `:9091`). Containers stopped cleanly via `docker compose down`.
+### - [x] **Phase 00 — Foundation & Microservices Setup**
+* **Status**: Completed (`[x]`)
+* **Core Artifacts & Infrastructure**:
+  - `docker-compose.yml`: Microservice orchestrator managing 6 core services (`mosquitto`, `neo4j`, `minio`, `replay-service`, `ignition`, `nodered`).
+  - Persistent Volumes: Configured `neo4j_data`, `minio_data`, `ignition_data`, and `nodered_data`.
+  - Service Configuration: `/broker/mosquitto.conf` (MQTT port `1883`, WebSockets port `9001`).
+  - Documentation: Master [README.md](file:///home/zakaria/Documents/grindingCircuitProject/README.md), team guide [ZINEB_GUIDE.md](file:///home/zakaria/Documents/grindingCircuitProject/ZINEB_GUIDE.md), and phase status tracking in [PROJECT_STATUS.md](file:///home/zakaria/Documents/grindingCircuitProject/PROJECT_STATUS.md).
+* **Empirical Verification**: All 6 containers confirmed running via `docker compose ps` and responding cleanly on assigned ports.
 
-- [x] **Phase 01 - Pipeline Connection Testing (SysCAD CSV replay -> MQTT)**
-  - **Status**: [x] Done
-  - **What exists right now**: `replay-service` with `data.csv` (482 SysCAD readings dataset) and Python MQTT replay service (`main.py`) streaming telemetry live to Mosquitto MQTT topics (`ocp/grinding/telemetry` & equipment-specific topics). Verified via container logs.
+---
 
-- [x] **Phase 02 - 2D visualization (Ignition Maker Edition, free/non-commercial)**
-  - **Status**: [x] Done
-  - **What exists right now**: Ignition SCADA Gateway running on port `8088` via Docker Compose. Complete SCADA tag provider export (`viz-2d/tags.json`) and Perspective 2D Synoptic View schema (`viz-2d/flowsheet_perspective_view.json`) representing the 4-equipment closed-loop grinding circuit. Verified via HTTP 302 response on `:8088`.
+### - [x] **Phase 01 — Telemetry Pipeline (SysCAD CSV Replay ➔ MQTT)**
+* **Status**: Completed (`[x]`)
+* **Core Artifacts & Infrastructure**:
+  - `/replay-service/main.py`: Python MQTT client using Paho MQTT `v2` protocol.
+  - `/replay-service/data.csv`: 482 continuous industrial simulation records from SysCAD.
+  - MQTT Topics: Streaming raw records to `ocp/grinding/telemetry` and equipment-specific streams (`ocp/grinding/equipment/{equip_id}`).
+* **Empirical Verification**: Container logs verified streaming CSV records continuously every 1.0s.
 
-- [ ] **Phase 03 - 3D visualization (Blender + three.js)**
-  - **Status**: [ ] Not Started
-  - **What exists right now**: Empty `/viz-3d` directory.
+---
 
-- [ ] **Phase 04 - Knowledge graph + Asset Administration Shell (Protégé ontology + Neo4j Community + Eclipse BaSyx AAS)**
-  - **Status**: [ ] Not Started
-  - **What exists right now**: Empty `/graph` directory. Neo4j container configured in Compose.
+### - [x] **Phase 02 — 2D SCADA Visualization & Node-RED Contextualization**
+* **Status**: Completed (`[x]`)
+* **Core Artifacts & Infrastructure**:
+  - **Node-RED Engine**: Service container running on port `1880` (`nodered/node-red:latest`) for telemetry enrichment, calculating recirculating load ratios, target $P_{80}$ deviations (160 µm cut point), and alarm threshold evaluations.
+  - **Ignition SCADA Gateway**: Running on port `8088` (`kcollins/ignition:8.1.33`).
+  - [viz-2d/tags.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/tags.json): Ignition Tag Provider export mapping SCADA expression and memory tags to MQTT topics.
+  - [viz-2d/flowsheet_perspective_view.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/flowsheet_perspective_view.json): Ignition Perspective 2D Synoptic View representing the closed-loop flowsheet (`Slurry_In` ➔ `PB_001` ➔ `SP_001` ➔ `CY_001` ➔ `BM_001` ➔ `Slurry_Out` with underflow recycle).
+* **Empirical Verification**: Ignition Gateway and Node-RED active and responding cleanly on ports `:8088` and `:1880`.
 
-- [ ] **Phase 05 - Dashboard & KPIs (React, embeds the 2D and 3D views)**
-  - **Status**: [ ] Not Started
-  - **What exists right now**: Empty `/dashboard` directory.
+---
 
-- [ ] **Phase 06 - Predictive maintenance & flow optimization — PARKED**
-  - **Status**: [ ] Not Started (PARKED)
-  - **What exists right now**: `/ai-ml/README.md` stating Phase 06 is parked until realistic sensor failure data is available. Do not create code here.
+### - [ ] **Phase 03 — 3D Industrial Visualization (Blender + three.js)**
+* **Status**: Not Started (`[ ]`)
+* **Directory**: `/viz-3d`
+* **Target Scope**: Low-poly GLTF equipment modeling in Blender, interactive 3D WebGL scene rendering via three.js, real-time animation of ball mill rotation and slurry flow particles bound to MQTT flow rates.
+
+---
+
+### - [ ] **Phase 04 — Knowledge Graph & Asset Administration Shell (AAS)**
+* **Status**: Not Started (`[ ]`)
+* **Directory**: `/graph`
+* **Target Scope**: Industry 4.0 Asset Administration Shell (AAS) submodel definitions (IDTA standard), Neo4j Community property graph model for equipment topology, Cypher queries for lineage and fault propagation tracing.
+
+---
+
+### - [ ] **Phase 05 — Unified React Monitoring Dashboard**
+* **Status**: Not Started (`[ ]`)
+* **Directory**: `/dashboard`
+* **Target Scope**: Modern React + Vite web dashboard embedding Ignition SCADA 2D views, three.js 3D canvas, live KPI cards, equipment slide-out detail drawers, and historical trend charts.
+
+---
+
+### - [ ] **Phase 06 — Predictive Maintenance & Flow Optimization**
+* **Status**: Parked (`[ ]` — PARKED)
+* **Directory**: `/ai-ml`
+* **Target Scope**: Parked until realistic sensor failure data is available. Do not write code here.
