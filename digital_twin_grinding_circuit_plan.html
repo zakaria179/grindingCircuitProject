@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Twin Plan — Grinding Circuit BM_001 / CY_001 (Study Project)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B2033;
+  --ink-2:#12324A;
+  --paper:#F3EFE3;
+  --paper-2:#EAE3D1;
+  --line:#2F4858;
+  --line-soft:#c9c0a6;
+  --ochre:#B8752E;
+  --ochre-2:#8f5a20;
+  --teal:#1F8A8C;
+  --teal-2:#156567;
+  --alert:#A63D40;
+  --good:#4B7B4F;
+  --display:'Space Grotesk',sans-serif;
+  --body:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --maxw:1180px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;}
+::selection{background:var(--ochre);color:#fff;}
+.blueprint-bg{background-image:linear-gradient(rgba(47,72,88,.08) 1px, transparent 1px),linear-gradient(90deg, rgba(47,72,88,.08) 1px, transparent 1px);background-size:28px 28px;}
+.shell{display:grid;grid-template-columns:260px 1fr;max-width:var(--maxw);margin:0 auto;}
+@media (max-width:900px){.shell{grid-template-columns:1fr;} nav.sidenav{position:relative !important; height:auto !important; border-right:none !important; border-bottom:2px solid var(--line);}}
+header.hero{position:relative;padding:60px 40px 44px;border-bottom:3px solid var(--ink);background:var(--paper);}
+header.hero .tagplate{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:var(--ink);color:var(--paper);padding:5px 10px;border-radius:2px;text-transform:uppercase;}
+header.hero h1{font-family:var(--display);font-size:clamp(30px,4.6vw,50px);line-height:1.08;margin:16px 0 10px;color:var(--ink);max-width:820px;}
+header.hero h1 span{color:var(--ochre);}
+header.hero p.lede{max-width:680px;font-size:17.5px;color:var(--ink-2);margin:0 0 22px;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:22px;margin-top:24px;font-family:var(--mono);font-size:12px;color:var(--ink-2);border-top:1px solid var(--line-soft);padding-top:16px;}
+.hero-meta div span{display:block;color:var(--ink);font-size:13px;font-weight:600;margin-top:3px;}
+nav.sidenav{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:2px solid var(--line);padding:26px 18px 40px;background:var(--paper-2);}
+nav.sidenav .brandmark{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-2);text-transform:uppercase;margin-bottom:18px;padding-bottom:14px;border-bottom:1px dashed var(--line-soft);}
+nav.sidenav a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);font-size:13px;padding:7px 6px;border-radius:3px;}
+nav.sidenav a .n{font-family:var(--mono);font-size:11px;color:var(--ochre-2);min-width:32px;}
+nav.sidenav a:hover{background:rgba(184,117,46,.12);}
+nav.sidenav a.active{background:var(--ink);color:var(--paper);}
+nav.sidenav a.active .n{color:var(--teal);}
+main{padding:0 40px 100px;}
+section{padding:52px 0;border-bottom:1px solid var(--line-soft);}
+section:last-child{border-bottom:none;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--teal-2);text-transform:uppercase;margin-bottom:8px;}
+h2.sec-title{font-family:var(--display);font-size:clamp(23px,2.8vw,30px);margin:0 0 6px;color:var(--ink);}
+p.sec-sub{color:var(--ink-2);max-width:760px;margin:0 0 26px;font-size:15px;}
+h4{font-family:var(--display);font-size:15px;margin:20px 0 8px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.02em;}
+p{margin:0 0 14px;}
+ul,ol{padding-left:20px;margin:0 0 14px;}
+li{margin-bottom:6px;}
+code,.tag{font-family:var(--mono);font-size:.86em;background:var(--ink);color:var(--paper);padding:1px 6px;border-radius:2px;}
+.tag.eq{background:var(--teal-2);}
+.tag.free{background:var(--good);}
+.tag.was{background:var(--alert);text-decoration:line-through;}
+.flowstrip{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin:22px 0 6px;font-family:var(--mono);font-size:13px;}
+.flowstrip .node{border:2px solid var(--ink);background:#fff;padding:10px 14px;border-radius:3px;display:flex;flex-direction:column;gap:2px;min-width:110px;}
+.flowstrip .node b{font-family:var(--display);font-size:14px;color:var(--ochre-2);}
+.flowstrip .node small{color:var(--ink-2);}
+.flowstrip .arrow{padding:0 10px;color:var(--teal-2);font-size:18px;}
+@media (max-width:700px){.flowstrip{flex-direction:column;align-items:flex-start;} .flowstrip .arrow{transform:rotate(90deg);padding:6px 0;}}
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:24px 0 8px;}
+@media (max-width:900px){.arch{grid-template-columns:1fr;}}
+.arch .layer{border:2px solid var(--ink);border-radius:4px;background:#fff;padding:14px 12px;min-height:160px;position:relative;}
+.arch .layer .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--paper);background:var(--ink);display:inline-block;padding:2px 6px;border-radius:2px;margin-bottom:8px;text-transform:uppercase;}
+.arch .layer h5{font-family:var(--display);font-size:14px;margin:0 0 8px;}
+.arch .layer ul{padding-left:16px;margin:0;font-size:12px;color:var(--ink-2);}
+.arch .layer.data{border-color:var(--ochre-2);}
+.arch .layer.edge{border-color:var(--teal-2);}
+.arch .layer.core{border-color:var(--ink);background:var(--paper-2);}
+.arch .layer.viz{border-color:var(--teal-2);}
+.arch .layer.dash{border-color:var(--ochre-2);}
+.arch-caption{font-size:12px;font-family:var(--mono);color:var(--ink-2);margin-top:6px;}
+.phase-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.phase-head .num{font-family:var(--display);font-size:32px;color:var(--paper);background:var(--ink);width:54px;height:54px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.phase-head .titles h2{margin:0;font-size:21px;}
+.phase-head .titles .sub{font-family:var(--mono);font-size:11.5px;color:var(--teal-2);text-transform:uppercase;letter-spacing:.06em;}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;margin-top:20px;}
+@media (max-width:900px){.grid2{grid-template-columns:1fr;}}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:5px;padding:18px 20px;}
+.card h4{margin-top:0;}
+.checklist{list-style:none;padding-left:0;margin:0;}
+.checklist li{padding-left:26px;position:relative;margin-bottom:9px;font-size:14px;}
+.checklist li::before{content:"";position:absolute;left:0;top:3px;width:15px;height:15px;border:1.6px solid var(--ink);border-radius:3px;background:#fff;}
+.stacklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.pill{font-family:var(--mono);font-size:11.5px;background:var(--paper-2);border:1px solid var(--line-soft);padding:4px 9px;border-radius:20px;color:var(--ink-2);}
+.pill.free{border-color:var(--good);color:var(--good);}
+.deliverable{border-left:3px solid var(--teal-2);padding:4px 0 4px 12px;margin-bottom:8px;font-size:13.5px;}
+.callout{border:1.5px dashed var(--ochre-2);background:#FBF2E4;border-radius:5px;padding:16px 18px;margin-top:18px;font-size:14px;}
+.callout .eyebrow{color:var(--ochre-2);}
+.callout.risk{border-color:var(--alert);background:#F8E9E9;}
+.callout.risk .eyebrow{color:var(--alert);}
+.callout.good{border-color:var(--good);background:#EEF4EC;}
+.callout.good .eyebrow{color:var(--good);}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+th,td{border:1px solid var(--line-soft);padding:9px 12px;text-align:left;vertical-align:top;}
+th{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;}
+tr:nth-child(even) td{background:var(--paper-2);}
+.gantt{margin-top:20px;}
+.gantt-row{display:grid;grid-template-columns:190px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+.gantt-row .lbl{font-size:12.5px;font-family:var(--mono);color:var(--ink-2);}
+.gantt-track{position:relative;height:24px;background:var(--paper-2);border-radius:3px;border:1px solid var(--line-soft);}
+.gantt-bar{position:absolute;top:2px;bottom:2px;background:var(--teal);border-radius:2px;}
+.gantt-bar.ai{background:repeating-linear-gradient(45deg,var(--ochre-2),var(--ochre-2) 6px,#d9a266 6px,#d9a266 12px);}
+.gantt-scale{display:grid;grid-template-columns:190px 1fr;margin-top:4px;}
+.gantt-scale .axis{font-family:var(--mono);font-size:11px;color:var(--ink-2);display:flex;justify-content:space-between;}
+footer{padding:34px 40px 60px;font-family:var(--mono);font-size:12px;color:var(--ink-2);border-top:3px solid var(--ink);}
+.backtotop{position:fixed;bottom:22px;right:22px;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:9px 13px;border-radius:20px;text-decoration:none;opacity:0;transition:opacity .2s;pointer-events:none;}
+.backtotop.show{opacity:1;pointer-events:auto;}
+</style>
+</head>
+<body class="blueprint-bg">
+
+<div class="shell">
+  <nav class="sidenav" id="sidenav">
+    <div class="brandmark">DT-GRIND / rev.02 — study project</div>
+    <a href="#context"><span class="n">00</span> Context &amp; constraints</a>
+    <a href="#architecture"><span class="n">01</span> Architecture, on $0</a>
+    <a href="#phase0"><span class="n">02</span> Foundation &amp; team setup</a>
+    <a href="#phase1"><span class="n">03</span> Simulated live feed</a>
+    <a href="#phase2"><span class="n">04</span> 2D visualization</a>
+    <a href="#phase3"><span class="n">05</span> 3D visualization</a>
+    <a href="#phase4"><span class="n">06</span> Knowledge graph + AAS</a>
+    <a href="#phase5"><span class="n">07</span> Dashboard &amp; KPIs</a>
+    <a href="#phase6"><span class="n">08</span> Predictive maintenance (parked)</a>
+    <a href="#stack"><span class="n">09</span> Stack map ($0)</a>
+    <a href="#timeline"><span class="n">10</span> Sequencing</a>
+    <a href="#risks"><span class="n">11</span> Risks</a>
+    <a href="#next"><span class="n">12</span> Open questions</a>
+  </nav>
+
+  <div>
+    <header class="hero">
+      <span class="tagplate">DT · GRIND-LINE · OCP PHOSPHATE · STUDY PROJECT</span>
+      <h1>A digital twin that moves <span>the way the real circuit does</span> — monitoring first, everything else later</h1>
+      <p class="lede">You're mirroring a real OCP grinding line (PB_001 → SP_001 → BM_001 → CY_001) you have no direct access to, using SysCAD simulation output as ground truth. Two people, two OSes, zero budget. This plan puts a clean, working monitoring pipeline first — 2D before 3D, pipeline before graph, everything before AI — because predictive maintenance and flow optimization are only as good as the data feeding them.</p>
+      <div class="hero-meta">
+        <div>Team<span>2 people · Ubuntu + Windows · git</span></div>
+        <div>Budget<span>$0 — open-source / free tiers only</span></div>
+        <div>Real plant access<span>None — SysCAD data stands in for live tags</span></div>
+        <div>Priority order<span>1. Monitoring → 2. Predictive maintenance → 3. Flow optimization</span></div>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- 00 CONTEXT -->
+      <section id="context">
+        <div class="eyebrow">00 — What this plan is actually working with</div>
+        <h2 class="sec-title">Context &amp; constraints</h2>
+        <p class="sec-sub">Every decision below traces back to one of these facts. Worth reading before the phases, since it explains why the order is what it is.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h4>The circuit is real, the data isn't (yet)</h4>
+            <p>PB_001 → SP_001 → BM_001 → CY_001 mirrors an actual OCP grinding/classification line. You have no PLC/SCADA/historian access to it. What you do have — the flowsheet, the SysCAD dynamic simulation (<code>Dynamic_Results.csv</code>), and the %BPL/Cd granulometric curve — is the only ground truth for now, and it has to be treated as such: good enough to build and test the whole pipeline, not good enough to claim it reflects today's real plant state.</p>
+            <p>160 µm is the cyclone cut-point target OCP uses for ore quality; %BPL and Cd are OCP's own grade/contaminant classification metrics. These aren't arbitrary KPIs — they're the vocabulary the real operators already use, so the twin should speak it too.</p>
+          </div>
+          <div class="card">
+            <h4>Why monitoring comes before AI</h4>
+            <p>Garbage in, garbage out: without real (or at least realistic, validated) sensor and failure history, any predictive-maintenance or optimization model would be trained on assumptions, not evidence. So the explicit order is: build a trustworthy, live-feeling pipeline and visualization first (monitoring) — then, once there's a track record of real or better-simulated data, revisit predictive maintenance and flow optimization.</p>
+            <div class="deliverable">This is why phase 08 (AI/ML) stays parked until phases 02–07 are working end to end.</div>
+          </div>
+        </div>
+
+        <div class="grid2" style="margin-top:6px;">
+          <div class="card">
+            <h4>Zero budget changes the tool list</h4>
+            <p>The architecture diagram you shared uses HighByte, which is commercial. That gets replaced below with a free, self-hostable equivalent: <code class="tag free">Mosquitto</code> + <code class="tag free">Node-RED</code> instead of <code class="tag was">HighByte</code>. Ignition stays, run as <strong>Ignition Maker Edition</strong> — free for non-commercial/educational use, full Perspective module, well above the tag count this project needs. Neo4j Community, BaSyx, Protégé, MinIO, React, Blender, three.js, n8n and AutoGluon are all already free — those stay as planned.</p>
+          </div>
+          <div class="card">
+            <h4>Two people, two operating systems</h4>
+            <p>Docker Compose becomes the thing that makes "it works on my machine" irrelevant — every service (broker, database, storage, API) runs identically on Ubuntu and Windows. This was likely where the earlier attempt got messy without a plan; phase 02 below exists specifically to fix that before any visualization work resumes.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 ARCHITECTURE MAP -->
+      <section id="architecture">
+        <div class="eyebrow">01 — Same shape, free tools</div>
+        <h2 class="sec-title">Architecture, rebuilt for $0</h2>
+        <p class="sec-sub">Same five layers as the reference diagram; every box is either already free or swapped for a free equivalent.</p>
+
+        <div class="arch">
+          <div class="layer data">
+            <span class="lbl">01 · sources</span>
+            <h5>Simulated feed</h5>
+            <ul>
+              <li>SysCAD <code>Dynamic_Results.csv</code> replayed as a live stream</li>
+              <li>%BPL/Cd granulometric curve as a static reference overlay</li>
+              <li>Real PLC/OPC tags — later, same interface, no redesign needed</li>
+            </ul>
+          </div>
+          <div class="layer edge">
+            <span class="lbl">02 · edge</span>
+            <h5>Mosquitto + Node-RED <span class="pill free">free</span></h5>
+            <ul>
+              <li>Mosquitto MQTT broker (self-hosted, Docker)</li>
+              <li>Node-RED for CSV-replay → MQTT publishing, easy to inspect/debug visually</li>
+              <li>MinIO for object storage (raw batches, assay files, 3D assets)</li>
+            </ul>
+          </div>
+          <div class="layer core">
+            <span class="lbl">03 · core</span>
+            <h5>Knowledge graph + AAS</h5>
+            <ul>
+              <li>Protégé ontology: Pump, PumpBox, Mill, CycloneCluster, Stream</li>
+              <li>Neo4j Community (free) — populated graph, closed-loop edges</li>
+              <li>BaSyx AAS server + Web UI — per-equipment digital nameplate</li>
+            </ul>
+          </div>
+          <div class="layer viz">
+            <span class="lbl">04 · visualization</span>
+            <h5>2D / 3D — free stack</h5>
+            <ul>
+              <li>Ignition Maker Edition (free, non-commercial) — live 2D flowsheet mimic</li>
+              <li>Blender (free) for geometry, three.js (free) for the web 3D scene</li>
+            </ul>
+          </div>
+          <div class="layer dash">
+            <span class="lbl">05 · apps</span>
+            <h5>Dashboard &amp; later ML</h5>
+            <ul>
+              <li>React dashboard — KPI &amp; monitoring, embeds the 2D/3D views</li>
+              <li>n8n (self-hosted, free) — alerts, later</li>
+              <li>AutoGluon (free) — predictive maintenance, parked</li>
+            </ul>
+          </div>
+        </div>
+        <p class="arch-caption">Everything downstream of the broker reads the same MQTT topics/graph — whether the source is the CSV replay today or a real PLC tomorrow, nothing else has to change.</p>
+
+        <div class="flowstrip" style="margin-top:18px;">
+          <div class="node"><b>Slurry_In</b><small>from wash cyclone</small></div>
+          <span class="arrow">→</span>
+          <div class="node"><b>PB_001</b><small>pump box</small></div>
+          <span class="arrow">→</span>
+          <div class="node"><b>SP_001</b><small>centrifugal pump</small></div>
+          <span class="arrow">→</span>
+          <div class="node"><b>BM_001</b><small>ball mill 160µm</small></div>
+          <span class="arrow">→</span>
+          <div class="node"><b>CY_001</b><small>cyclone cluster</small></div>
+          <span class="arrow">→</span>
+          <div class="node"><b>Slurry_Out</b><small>to flotation</small></div>
+        </div>
+        <p class="arch-caption">CY_001 underflow recycles back to PB_001 — the one loop every layer above has to respect.</p>
+      </section>
+
+      <!-- PHASE 00 -->
+      <section id="phase0">
+        <div class="phase-head">
+          <div class="num">00</div>
+          <div class="titles"><h2>Foundation &amp; team setup</h2><div class="sub">Fix what went wrong last time, before touching visualization again</div></div>
+        </div>
+        <p class="sec-sub">This phase didn't exist in a generic plan, but it should be first here — it's what the earlier Docker attempt was missing.</p>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks</h4>
+            <ul class="checklist">
+              <li>Set up one shared git repo with a clear folder structure: <code>/broker</code>, <code>/replay-service</code>, <code>/graph</code>, <code>/viz-2d</code>, <code>/viz-3d</code>, <code>/dashboard</code></li>
+              <li>Write one <code>docker-compose.yml</code> that starts Mosquitto, Neo4j, MinIO and the replay service together — tested on both Ubuntu and Windows (Docker Desktop) before any feature work starts</li>
+              <li>Agree on a branching convention (e.g. one branch per phase/feature, PRs reviewed by the other person)</li>
+              <li>Write a one-page README: how to run everything with one command, on either OS</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Why first</h4>
+            <p>The previous 2D/simulation attempt stalled without clean steps. A reproducible, one-command environment removes the most common reason two people on different OSes drift out of sync, and gives every later phase a stable base to build on instead of re-debugging Docker each time.</p>
+            <div class="deliverable">Deliverable — working <code>docker-compose up</code> on both machines</div>
+            <div class="deliverable">Deliverable — README + repo structure</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 01 -->
+      <section id="phase1">
+        <div class="phase-head">
+          <div class="num">01</div>
+          <div class="titles"><h2>Simulated live feed</h2><div class="sub">Turn the CSV into something that behaves like a live tag stream</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks</h4>
+            <ul class="checklist">
+              <li>Write a small replay service (Python or Node-RED flow) that reads <code>Dynamic_Results.csv</code> row by row and publishes each field to its own MQTT topic, at either real timing (~16 min/row) or a sped-up demo rate</li>
+              <li>Topic naming mirrors the flowsheet tags: e.g. <code>circuit/BM_001/discharge/percent_bpl</code>, <code>circuit/CY_001/underflow/p80</code></li>
+              <li>Publish the %BPL/Cd granulometric curve once at startup as a reference topic (it's static, not a live signal)</li>
+              <li>Add a "replay speed" and "loop" control so the whole team can demo without waiting hours for a full run</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Stack</h4>
+            <div class="stacklist">
+              <span class="pill free">Mosquitto</span>
+              <span class="pill free">Node-RED or Python (paho-mqtt)</span>
+              <span class="pill free">Docker</span>
+            </div>
+            <div class="deliverable">Deliverable — CSV-replay service publishing to MQTT</div>
+            <div class="deliverable">Deliverable — Tag/topic dictionary (matches flowsheet labels)</div>
+          </div>
+        </div>
+        <div class="callout good">
+          <div class="eyebrow">Why this unblocks everything</div>
+          Once this exists, 2D, 3D, the graph and the dashboard can all be built and demoed independently, each just subscribing to the same MQTT topics — no waiting on real plant access.
+        </div>
+      </section>
+
+      <!-- PHASE 02 -->
+      <section id="phase2">
+        <div class="phase-head">
+          <div class="num">02</div>
+          <div class="titles"><h2>2D visualization</h2><div class="sub">Ignition Maker Edition — the thing you tried before, this time with clean steps</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks, in order</h4>
+            <ul class="checklist">
+              <li>Step 1 — install &amp; commission: install the Ignition Gateway (Windows/Linux, same installer for every edition), commission it as <strong>Maker Edition</strong>, generate the free license from your Inductive Automation account</li>
+              <li>Step 2 — connect to the data: enable the MQTT Engine / OPC-UA modules and point Ignition at the Mosquitto broker from phase 01, subscribing to the CSV-replay topics</li>
+              <li>Step 3 — build the static view: redraw the flowsheet (PB_001, SP_001, BM_001, CY_001, six streams) as a Perspective view, no live bindings yet</li>
+              <li>Step 4 — bind one tag first: pipe color/opacity tied to %solids on one stream, prove the loop works end to end before wiring the rest</li>
+              <li>Step 5 — finish the bindings: flow animation, %BPL/P80 value call-outs, a color band on CY_001 showing how close the cyclone cut is to the 160 µm target, plus basic alarms</li>
+              <li>Step 6 — publish the Perspective session so it's viewable in a browser, ready to be embedded (iframe) in the React dashboard in phase 05</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Stack</h4>
+            <div class="stacklist">
+              <span class="pill free">Ignition Maker Edition</span>
+              <span class="pill free">Perspective module</span>
+              <span class="pill free">MQTT Engine / OPC-UA module</span>
+            </div>
+            <div class="deliverable">Deliverable — Ignition Gateway running in Docker or natively, licensed as Maker Edition</div>
+            <div class="deliverable">Deliverable — live 2D mimic, one tag bound end to end (milestone)</div>
+            <div class="deliverable">Deliverable — full 2D mimic with all six streams + target-band coloring + alarms</div>
+          </div>
+        </div>
+        <div class="callout">
+          <div class="eyebrow">Maker Edition — what to keep in mind</div>
+          Free, but personal/non-commercial/educational use only — fine for a study project, not for anything sold or run for a client later. It supports up to 10,000 tags and 10 concurrent Perspective sessions (nowhere near this circuit's needs), doesn't include the Vision module (Perspective covers this build fine), and needs a periodic internet check-in to keep the license valid. If offline operation ever matters more than that check-in, the alternative is the full unlimited-trial mode, which is functionally complete but restarts the gateway every 2 hours.
+        </div>
+      </section>
+
+      <!-- PHASE 03 -->
+      <section id="phase3">
+        <div class="phase-head">
+          <div class="num">03</div>
+          <div class="titles"><h2>3D visualization</h2><div class="sub">Only after 2D is live and stable</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks</h4>
+            <ul class="checklist">
+              <li>Model low-poly, representative geometry in Blender for pump box, centrifugal pump, ball mill, 4-cyclone cluster — real OCP CAD isn't available, so accuracy of proportion/layout matters more than surface detail</li>
+              <li>Export as glTF, load in a three.js scene</li>
+              <li>Subscribe the 3D scene to the same MQTT topics as the 2D mimic</li>
+              <li>Animate: mill rotation speed from a power/throughput proxy, slurry tint from %solids, simple particle/flow effect on active streams</li>
+              <li>One overview camera to start; equipment close-ups only if time allows</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Stack</h4>
+            <div class="stacklist">
+              <span class="pill free">Blender</span>
+              <span class="pill free">three.js</span>
+              <span class="pill free">glTF</span>
+            </div>
+            <div class="deliverable">Deliverable — glTF asset set for the 4 pieces of equipment</div>
+            <div class="deliverable">Deliverable — three.js viewer, same tag bindings as the 2D mimic</div>
+          </div>
+        </div>
+        <div class="callout risk">
+          <div class="eyebrow">Guard against scope creep here</div>
+          Photoreal 3D is a time sink with no monitoring payoff. Ship low-poly + correct motion first; only add visual polish if the 2D+3D+dashboard loop is already working end to end.
+        </div>
+      </section>
+
+      <!-- PHASE 04 -->
+      <section id="phase4">
+        <div class="phase-head">
+          <div class="num">04</div>
+          <div class="titles"><h2>Knowledge graph &amp; Asset Administration Shell</h2><div class="sub">Protégé · Neo4j · BaSyx — the single source of truth</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks</h4>
+            <ul class="checklist">
+              <li>Model the ontology in Protégé: classes <em>Equipment</em> (Pump, PumpBox, Mill, CycloneCluster), <em>Stream</em>, <em>Property</em>; relationships <code>feeds</code>, <code>discharges_to</code>, <code>recycles_to</code></li>
+              <li>Encode the real topology: <code>PB_001 -[:FEEDS]-> SP_001 -[:FEEDS]-> BM_001 -[:DISCHARGES_TO]-> CY_001 -[:RECYCLES_TO]-> PB_001</code>, <code>CY_001 -[:DISCHARGES_TO]-> Slurry_Out</code></li>
+              <li>Import the ontology into Neo4j Community; have the MQTT/edge layer write each new reading in as it arrives, instead of duplicating "current value" logic in every app</li>
+              <li>Stand up BaSyx AAS server; create one AAS submodel per equipment (nameplate, operational data, linked documents — flowsheet, 3D asset)</li>
+              <li>Expose the AAS Web UI for browsing/editing asset metadata (mill diameter, cyclone cut size, etc.) without touching the graph directly</li>
+              <li>Write one Cypher query for circulating load ratio, reusable by the dashboard — the closed loop is exactly why this needs to be a graph, not a flat tag list</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Stack</h4>
+            <div class="stacklist">
+              <span class="pill free">Protégé</span>
+              <span class="pill free">Neo4j Community + Bolt driver</span>
+              <span class="pill free">Eclipse BaSyx (AAS server)</span>
+              <span class="pill free">AAS Web UI</span>
+            </div>
+            <div class="deliverable">Deliverable — ontology file (.owl) + data dictionary</div>
+            <div class="deliverable">Deliverable — populated Neo4j graph reflecting the real closed loop</div>
+            <div class="deliverable">Deliverable — 4 AAS submodels (PB_001, SP_001, BM_001, CY_001)</div>
+            <div class="deliverable">Deliverable — one working circulating-load query</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 05 -->
+      <section id="phase5">
+        <div class="phase-head">
+          <div class="num">05</div>
+          <div class="titles"><h2>Dashboard &amp; KPIs</h2><div class="sub">Where 2D, 3D and the graph come together</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Tasks</h4>
+            <ul class="checklist">
+              <li>React app embedding the 2D mimic and the three.js scene as components/panels</li>
+              <li>Live trend charts per stream: solid flow, %BPL, P80 (straight from the CSV replay)</li>
+              <li>Granulometric benchmark panel reproducing the %BPL/Cd/%weight curve, with a marker showing where current P80 sits relative to it</li>
+              <li>Circulating-load tile, calling the Neo4j Cypher query from phase 04</li>
+              <li>Equipment status cards for PB_001/SP_001/BM_001/CY_001 (run/stopped, last reading)</li>
+              <li>One alert: cyclone cut drifting away from the 160 µm target band</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Stack</h4>
+            <div class="stacklist">
+              <span class="pill free">React</span>
+              <span class="pill free">Recharts</span>
+              <span class="pill free">MQTT over WebSockets / small REST API over Neo4j</span>
+            </div>
+            <div class="deliverable">Deliverable — dashboard v1: KPIs + embedded 2D + embedded 3D</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 06 - AI/ML parked -->
+      <section id="phase6">
+        <div class="phase-head">
+          <div class="num">06</div>
+          <div class="titles"><h2>Predictive maintenance &amp; flow optimization — parked</h2><div class="sub">Revisit once phases 00–07 run cleanly on real or better data</div></div>
+        </div>
+        <p class="sec-sub">You named these as goals 2 and 3, in that order, and were explicit that AI/ML shouldn't start before there's real data to avoid GIGO. This section is a placeholder for that future conversation, not a task list to start on now.</p>
+        <div class="callout risk">
+          <div class="eyebrow">Do not start building</div>
+          There's currently no failure/maintenance history and no real sensor stream — anything modeled today would be trained on assumptions. Wait until phase 00–05 are stable and either real plant data or a deliberately richer simulation exists.
+        </div>
+        <h4>Questions to answer when you get here</h4>
+        <ul>
+          <li>Predictive maintenance on which equipment first — BM_001 (highest-value asset) or SP_001 (simplest failure modes)?</li>
+          <li>What would "flow optimization" change in practice — setpoints, water addition, cyclone pressure? Whoever owns the answer to that should be part of that conversation.</li>
+          <li>Is there any way to get even informal maintenance logs from OCP (even anonymized/aggregated), or does the model have to be trained purely on simulated fault injection?</li>
+        </ul>
+      </section>
+
+      <!-- STACK TABLE -->
+      <section id="stack">
+        <div class="eyebrow">09 — Full picture</div>
+        <h2 class="sec-title">Stack map — everything free</h2>
+        <table>
+          <tr><th>Layer</th><th>Tool</th><th>Cost</th><th>Role</th></tr>
+          <tr><td>Source</td><td>SysCAD CSV replay</td><td>$0</td><td>Stand-in for live PLC/OPC tags</td></tr>
+          <tr><td>Broker</td><td>Mosquitto</td><td>$0 (self-hosted)</td><td>MQTT messaging backbone</td></tr>
+          <tr><td>Edge logic</td><td>Node-RED</td><td>$0 (self-hosted)</td><td>Replay-to-MQTT flow, optional quick dashboards</td></tr>
+          <tr><td>Object storage</td><td>MinIO</td><td>$0 (self-hosted)</td><td>Raw batches, assay curve, 3D assets</td></tr>
+          <tr><td>Graph DB</td><td>Neo4j Community</td><td>$0</td><td>Equipment/stream graph, circulating load</td></tr>
+          <tr><td>2D visualization</td><td>Ignition Maker Edition (Perspective)</td><td>$0 (non-commercial license)</td><td>Live flowsheet mimic</td></tr>
+          <tr><td>Ontology</td><td>Protégé</td><td>$0</td><td>Equipment/stream/relationship model</td></tr>
+          <tr><td>Asset shell</td><td>Eclipse BaSyx (AAS server + Web UI)</td><td>$0</td><td>Per-equipment digital nameplate &amp; documents</td></tr>
+          <tr><td>3D visualization</td><td>Blender + three.js</td><td>$0</td><td>Spatial model, tag-animated</td></tr>
+          <tr><td>Dashboard</td><td>React + Recharts</td><td>$0</td><td>KPI monitoring, embeds 2D/3D</td></tr>
+          <tr><td>Automation</td><td>n8n (self-hosted)</td><td>$0</td><td>Alerts — later</td></tr>
+          <tr><td>Predictive ML</td><td>AutoGluon</td><td>$0</td><td>Parked — phase 06</td></tr>
+          <tr><td>Dev environment</td><td>Docker Compose + git</td><td>$0</td><td>Ubuntu/Windows parity</td></tr>
+        </table>
+      </section>
+
+      <!-- TIMELINE -->
+      <section id="timeline">
+        <div class="eyebrow">10 — Indicative sequencing</div>
+        <h2 class="sec-title">Sequencing</h2>
+        <p class="sec-sub">No deadline was given, so read these as relative order and rough proportion, not calendar weeks. Each phase's "done" milestone is what unlocks the next.</p>
+        <div class="gantt">
+          <div class="gantt-row"><div class="lbl">00 Foundation</div><div class="gantt-track"><div class="gantt-bar" style="left:0%;width:8%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">01 Simulated feed</div><div class="gantt-track"><div class="gantt-bar" style="left:6%;width:12%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">02 2D visualization</div><div class="gantt-track"><div class="gantt-bar" style="left:16%;width:20%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">03 3D visualization</div><div class="gantt-track"><div class="gantt-bar" style="left:34%;width:18%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">04 Knowledge model</div><div class="gantt-track"><div class="gantt-bar" style="left:40%;width:16%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">05 Dashboard</div><div class="gantt-track"><div class="gantt-bar" style="left:52%;width:18%;"></div></div></div>
+          <div class="gantt-row"><div class="lbl">06 Predictive/ML</div><div class="gantt-track"><div class="gantt-bar ai" style="left:74%;width:24%;"></div></div></div>
+        </div>
+        <div class="gantt-scale"><div></div><div class="axis"><span>Start</span><span>Working monitoring pipeline</span><span>Revisit AI/ML</span></div></div>
+      </section>
+
+      <!-- RISKS -->
+      <section id="risks">
+        <div class="eyebrow">11 — Watch list</div>
+        <h2 class="sec-title">Risks &amp; mitigations</h2>
+        <table>
+          <tr><th>Risk</th><th>Why it matters here</th><th>Mitigation</th></tr>
+          <tr><td>Repeating the last stall</td><td>2D/simulation attempt failed once already from lack of clean steps</td><td>Phase 00 (foundation) exists specifically to fix this before visualization resumes</td></tr>
+          <tr><td>OS drift (Ubuntu vs. Windows)</td><td>Different environments silently diverge without a shared runner</td><td>Docker Compose as the only supported way to run the project</td></tr>
+          <tr><td>Treating simulated data as real</td><td>SysCAD output is a stand-in, not today's actual plant state</td><td>Keep this caveat visible in the dashboard UI itself, not just in docs</td></tr>
+          <tr><td>Starting ML too early</td><td>No failure/maintenance data exists yet — GIGO risk you already flagged</td><td>Phase 06 explicitly parked until phases 00–05 are stable</td></tr>
+          <tr><td>3D fidelity creep</td><td>Blender work can expand indefinitely with no monitoring payoff</td><td>Low-poly + correct motion is the bar for v1</td></tr>
+          <tr><td>Accidentally paid tiers</td><td>Neo4j Enterprise, cloud MinIO, hosted MQTT brokers, and Ignition's standard/unlimited license all look similar to their free equivalents</td><td>Explicitly pin Community/Maker Edition/self-hosted versions in the docker-compose file and README; keep Ignition activity strictly non-commercial</td></tr>
+          <tr><td>Ignition license lapse</td><td>Maker Edition needs a periodic internet check-in to stay valid</td><td>Keep the Gateway machine online, or fall back to trial mode (2-hour restarts) for any offline demo</td></tr>
+        </table>
+      </section>
+
+      <!-- NEXT -->
+      <section id="next">
+        <div class="eyebrow">12 — Before phase 00 starts</div>
+        <h2 class="sec-title">Open questions</h2>
+        <ul>
+          <li>Which machine hosts the Ignition Gateway long-term (needs to stay reachable for the Maker Edition license check-in) — one of your two laptops, or a small always-on box/VM?</li>
+          <li>Replay speed: should the demo run at real SysCAD timing (~16 min/step) or sped up for demos/grading — probably both, with a toggle?</li>
+          <li>How much of the graph work (phase 04) is worth doing before the dashboard, versus building the dashboard first against raw MQTT and adding the graph once circulating load actually needs it?</li>
+          <li>Is there any chance, even informally, of getting real sensor or maintenance data later in the project — worth checking now since it changes how phase 06 eventually gets framed?</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer>
+      DT-GRIND build plan · rev.02 · study project, OCP grinding circuit (BM_001/CY_001), zero budget, monitoring-first. Derived from the supplied flowsheet, SysCAD dynamic dataset, %BPL/Cd granulometric curve, and reference architecture — adjusted for real constraints.
+    </footer>
+  </div>
+</div>
+
+<a href="#" class="backtotop" id="backtotop">↑ top</a>
+
+<script>
+  const links = document.querySelectorAll('nav.sidenav a');
+  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    sections.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top < 140) idx = i; });
+    links.forEach(l=>l.classList.remove('active'));
+    if(links[idx]) links[idx].classList.add('active');
+    document.getElementById('backtotop').classList.toggle('show', window.scrollY > 600);
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+</body>
+</html>

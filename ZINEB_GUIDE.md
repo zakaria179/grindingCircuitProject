@@ -1,15 +1,14 @@
 # Zineb's Windows Setup & Execution Guide 🚀
 
-Hi Zineb! This guide is updated after every push to make sure you can safely clone, run, and test the project on **Windows** using Docker Desktop.
+Hi Zineb! This guide is aligned with our master plan file: [digital_twin_grinding_circuit_plan.html](file:///home/zakaria/Documents/grindingCircuitProject/digital_twin_grinding_circuit_plan.html).
 
 ---
 
 ## 📌 Current Project Status & Architecture
 
-- **Current Completed Phase**: **Phase 02 — 2D Visualization & Node-RED Integration** (`[x]`)
 - **Active Microservices**:
-  1. `mosquitto`: MQTT messaging broker (`:1883`)
-  2. `replay-service`: Streams live SysCAD telemetry from `data.csv`
+  1. `mosquitto`: MQTT messaging broker (`:1883` TCP, `:9001` WebSockets)
+  2. `replay-service`: Telemetry replayer streaming SysCAD data (`Dynamic_Results.csv` / `data.csv`)
   3. `node-red`: Data integration & contextualization engine (`:1880`)
   4. `ignition`: Industrial 2D SCADA HMI gateway (`:8088`)
   5. `neo4j`: AAS Knowledge Graph database (`:7474`)
@@ -18,8 +17,6 @@ Hi Zineb! This guide is updated after every push to make sure you can safely clo
 ---
 
 ## 🌐 Quick Access Links & Web Interfaces
-
-Once containers are running via Docker Desktop, open your web browser and navigate to:
 
 | Service | Web Access URL | Credentials | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -35,57 +32,29 @@ Once containers are running via Docker Desktop, open your web browser and naviga
 
 ### Step 1: Prepare Docker Desktop
 1. Ensure **Docker Desktop for Windows** is installed and running (look for the whale icon in your taskbar).
-2. If prompted, make sure WSL 2 backend is enabled.
+2. Ensure WSL 2 backend is enabled.
 
 ### Step 2: Open Terminal / VS Code & Pull Latest Changes
-Open PowerShell, Command Prompt, or VS Code terminal in your project directory:
-
 ```powershell
 git pull origin main
 ```
 
 ### Step 3: Launch All Microservices
-Run the following command to build and launch all containers in background mode:
-
 ```powershell
 docker compose up -d
 ```
 
 ### Step 4: Verify Container Status
-Check that all containers show as `Up`:
-
 ```powershell
 docker compose ps
 ```
 
-### Step 5: Test Web Interfaces
-1. Open **Node-RED** at [http://localhost:1880](http://localhost:1880). You can build drag-and-drop flows to compute KPIs or format MQTT telemetry!
-2. Open **Ignition** at [http://localhost:8088](http://localhost:8088). Login with `admin` / `changeme123` to inspect Tag Providers and Perspective 2D Views.
-
----
-
-## 💻 Working with Git (Making & Pushing Changes)
-
-When you make changes or add new files on your machine, follow these commands to push them back to the repository:
-
-1. **Check changed files**:
-   ```powershell
-   git status
-   ```
-
-2. **Stage your changes**:
-   ```powershell
-   git add .
-   ```
-
-3. **Commit your work with a clear message**:
-   ```powershell
-   git commit -m "Your description of work done"
-   ```
-
-4. **Push to GitHub**:
-   ```powershell
-   git push origin main
-   ```
-
-If you encounter any issues or Docker errors on Windows, let the team know!
+### Step 5: Explore Phase Documentation
+All detailed phase specifications are available in the [`docs/`](file:///home/zakaria/Documents/grindingCircuitProject/docs/README.md) directory:
+- [Phase 00: Foundation & Setup](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_00_FOUNDATION_TEAM_SETUP.md)
+- [Phase 01: Simulated Live Feed](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_01_SIMULATED_LIVE_FEED.md)
+- [Phase 02: 2D Visualization](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_02_2D_VISUALIZATION.md)
+- [Phase 03: 3D Visualization](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_03_3D_VISUALIZATION.md)
+- [Phase 04: Knowledge Graph & AAS](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_04_KNOWLEDGE_GRAPH_AAS.md)
+- [Phase 05: Dashboard & KPIs](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_05_DASHBOARD_KPIS.md)
+- [Phase 06: Predictive Maintenance](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_06_PREDICTIVE_MAINTENANCE_PARKED.md)

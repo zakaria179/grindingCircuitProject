@@ -1,133 +1,67 @@
-# OCP Ore Grinding Circuit Digital Twin 🏭⚡
+# Digital Twin — Grinding Circuit BM_001 / CY_001 (Study Project) 🏭⚡
 
-A professional-grade, open-source industrial **Digital Twin of OCP's Phosphate Ore Grinding Circuit**, modeled around a closed-loop flowsheet:
-`Slurry_In` ➔ **Pump Box (`PB_001`)** ➔ **Slurry Pump (`SP_001`)** ➔ **Hydrocyclones (`CY_001`)** ➔ **Ball Mill (`BM_001`)** ➔ `Slurry_Out` (to flotation), with coarse hydrocyclone underflow recycling back to `PB_001`.
+A $0-budget, open-source industrial **Digital Twin of an OCP Phosphate Ore Grinding & Classification Line**, built to mirror a real plant circuit using SysCAD dynamic simulation output (`Dynamic_Results.csv`) and %BPL / Cd granulometric curve data as ground truth.
 
-Built with a $0 software budget using industry-standard open-source tools (Docker Compose, Eclipse Mosquitto, Node-RED, Ignition Maker Edition, Neo4j Community, MinIO, Blender, three.js, React), this project provides real-time SCADA telemetry monitoring, data contextualization, Industry 4.0 Asset Administration Shell (AAS) knowledge graphs, and interactive 2D/3D visualization.
-
-> ⚠️ **IMPORTANT**: Always check [PROJECT_STATUS.md](file:///home/zakaria/Documents/grindingCircuitProject/PROJECT_STATUS.md) for the active build state before creating or modifying code.
+Master Plan Specification: [digital_twin_grinding_circuit_plan (1).html](file:///home/zakaria/Documents/grindingCircuitProject/digital_twin_grinding_circuit_plan%20%281%29.html)
 
 ---
 
-## 📐 Process Flowsheet & Circuit Topology
+## 📐 Circuit Flowsheet & Topology
+
+The digital twin strictly mirrors the OCP grinding line topology specified in the master plan:
 
 ```
-                       ┌──────────────────────────────────────────────┐
-                       │                                              │
-                       ▼                                              │
-  [Slurry_In] ──► [PB_001 Pump Box] ──► [SP_001 Slurry Pump] ──► [CY_001 Hydrocyclone]
-  (Fresh Feed)    (Recovers Recycle)    (Discharge to Cyclones)    (160 µm Target Cut)
-                                                                      │          │
-                                                Underflow (>160 µm)  │          │ Overflow (≤160 µm)
-                                                ┌─────────────────────┘          ▼
-                                                ▼                          [Slurry_Out]
-                                       [BM_001 Ball Mill]              (Flotation Feed)
-                                       (Ground to 160 µm P80)
-                                                │
-                                                └──────────────────────────────► [PB_001]
+  [Slurry_In] ──► [PB_001 Pump Box] ──► [SP_001 Slurry Pump] ──► [BM_001 Ball Mill] ──► [CY_001 Cyclone Cluster] ──► [Slurry_Out]
+  (Wash Cyclone)  (Recovers Recycle)    (Feeds Ball Mill)       (160 µm Target)       (Cyclone Overflow)       (Flotation Feed)
+                        ▲                                                                    │
+                        │                                                                    │ Underflow Recycle
+                        └────────────────────────────────────────────────────────────────────┘ (>160 µm Coarse Material)
 ```
 
-* **Target Output Particle Size**: 80% passing **160 µm** ($P_{80} = 160\,\mu\text{m}$).
-* **Recirculating Load**: Coarse material exceeding $160\,\mu\text{m}$ is separated at hydrocyclone `CY_001` underflow and returned to `PB_001` for re-grinding in `BM_001`.
+* **Target Cut Point**: $160\,\mu\text{m}$ cyclone cut point target used by OCP for ore quality.
+* **Key Quality Metrics**: %BPL (Bone Phosphate of Lime) grade metric and Cadmium (Cd) contaminant concentration.
+* **Closed-Loop Recycle**: Coarse hydrocyclone underflow (`CY_001`) recycles back into the pump box (`PB_001`).
 
 ---
 
-## 🏗️ System Architecture & Services Stack
+## 🏗️ 5-Layer Architecture (Zero Budget Stack)
 
 ```
- ┌──────────────────┐
- │  replay-service  │ (Python CSV Replayer)
- └────────┬─────────┘
-          │ (Raw MQTT Telemetry)
-          ▼
- ┌──────────────────┐     (Port 1883)
- │    Mosquitto     │ ◄──────────────────────────────┐
- └────────┬─────────┘                                │
-          │                                          │
-          ▼                                          │
- ┌──────────────────┐ (Port 1880)                    │
- │     Node-RED     │ ── (Enriched KPI Topics) ──────┘
- └────────┬─────────┘
-          │
-          ├─────────────────────────┬────────────────────────┐
-          ▼                         ▼                        ▼
- ┌──────────────────┐      ┌──────────────────┐     ┌──────────────────┐
- │ Ignition SCADA   │      │  Neo4j Graph DB  │     │   MinIO Object   │
- │ (2D Synoptic)    │      │  (AAS Knowledge) │     │     Storage      │
- └──────────────────┘      └──────────────────┘     └──────────────────┘
-    (Port 8088)               (Port 7474)              (Port 9091)
+  Layer 01 · Data Sources      : SysCAD Dynamic_Results.csv Replay Service + %BPL/Cd Granulometric Curve
+  Layer 02 · Edge & Storage    : Mosquitto MQTT Broker + Node-RED + MinIO Object Storage
+  Layer 03 · Knowledge & AAS   : Protégé Ontology (.owl) + Neo4j Community DB + Eclipse BaSyx AAS Server & Web UI
+  Layer 04 · Visualization     : Ignition Maker Edition (2D Perspective Synoptic) + Blender GLTF + three.js (3D Scene)
+  Layer 05 · Apps & Dashboard  : React Dashboard (KPIs, Granulometric Benchmark, Embedded 2D/3D Viewports)
 ```
 
 ---
 
-## 🗺️ Phase Roadmap & Comprehensive Details
+## 🗺️ Phase Roadmap & Detailed Documentation Index
 
-### - [x] **Phase 00 — Foundation & Microservices Infrastructure**
-* **Status**: Completed (`[x]`)
-* **Details**: Established containerized microservice foundation via `docker-compose.yml`. Configured default networking, persistent data volumes (`neo4j_data`, `minio_data`, `ignition_data`, `nodered_data`), and default environment variables. Includes empirical health checks for all service ports.
+The project is structured into sequential phases according to the master plan. Comprehensive documentation for each phase is located in the [`/docs`](file:///home/zakaria/Documents/grindingCircuitProject/docs/README.md) directory:
 
-### - [x] **Phase 01 — Pipeline Connection Testing (SysCAD CSV Replay ➔ MQTT)**
-* **Status**: Completed (`[x]`)
-* **Details**: Built the `replay-service` microservice parsing a 482-record SysCAD continuous simulation dataset (`data.csv`). Streams telemetry every second over Mosquitto MQTT broker on `ocp/grinding/telemetry` and targeted equipment topics (`ocp/grinding/equipment/{equip_id}`).
-
-### - [x] **Phase 02 — 2D SCADA Visualization & Node-RED Data Contextualization**
-* **Status**: Completed (`[x]`)
-* **Details**: Integrated **Node-RED** (Port `1880`) for telemetry enrichment, computing recirculating load ratios, target $P_{80}$ deviations, and alarm thresholds. Integrated **Ignition Maker Edition** (Port `8088`) with complete SCADA Tag Provider exports ([viz-2d/tags.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/tags.json)) and Perspective 2D Synoptic View ([viz-2d/flowsheet_perspective_view.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/flowsheet_perspective_view.json)).
-
-### - [ ] **Phase 03 — 3D Industrial Visualization (Blender + three.js)**
-* **Status**: Planned (`[ ]`)
-* **Details**: Building GLTF low-poly 3D models for equipment and piping in Blender. Rendering an interactive 3D WebGL scene via three.js with real-time speed animations (ball mill rotation rate, slurry flow particle speed) bound to live MQTT flow parameters.
-
-### - [ ] **Phase 04 — Knowledge Graph & Asset Administration Shell (AAS)**
-* **Status**: Planned (`[ ]`)
-* **Details**: Creating Industry 4.0 Asset Administration Shell (AAS) submodels (Nameplate, Operational Data, Technical Manuals) using IDTA standards. Modeling equipment relationships in Neo4j Community Edition using Cypher graph queries and Protégé OWL ontologies.
-
-### - [ ] **Phase 05 — Unified React Monitoring Dashboard**
-* **Status**: Planned (`[ ]`)
-* **Details**: Developing a modern single-pane-of-glass React + Vite web dashboard embedding Ignition 2D views, three.js 3D canvas, live KPI cards, and equipment slide-out detail drawers.
-
-### - [ ] **Phase 06 — Predictive Maintenance & Flow Optimization**
-* **Status**: Parked (`[ ]`)
-* **Details**: Parked until realistic sensor failure datasets are available.
+| Phase | Title | Description & Target Deliverables | Detailed Guide |
+| :--- | :--- | :--- | :--- |
+| **Phase 00** | **Foundation & Team Setup** | Shared git structure, cross-platform `docker-compose.yml` (Ubuntu & Windows parity). | [`docs/PHASE_00_FOUNDATION_TEAM_SETUP.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_00_FOUNDATION_TEAM_SETUP.md) |
+| **Phase 01** | **Simulated Live Feed** | Python / Node-RED CSV replay service publishing `Dynamic_Results.csv` to MQTT (`circuit/*`). | [`docs/PHASE_01_SIMULATED_LIVE_FEED.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_01_SIMULATED_LIVE_FEED.md) |
+| **Phase 02** | **2D Visualization** | Ignition Maker Edition Perspective synoptic mimic (`PB_001`, `SP_001`, `BM_001`, `CY_001`) with live tag bindings. | [`docs/PHASE_02_2D_VISUALIZATION.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_02_2D_VISUALIZATION.md) |
+| **Phase 03** | **3D Visualization** | Blender low-poly GLTF equipment assets animated in three.js canvas via MQTT telemetry. | [`docs/PHASE_03_3D_VISUALIZATION.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_03_3D_VISUALIZATION.md) |
+| **Phase 04** | **Knowledge Graph & AAS** | Protégé OWL ontology, Neo4j Community graph, Eclipse BaSyx AAS submodels, circulating load Cypher query. | [`docs/PHASE_04_KNOWLEDGE_GRAPH_AAS.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_04_KNOWLEDGE_GRAPH_AAS.md) |
+| **Phase 05** | **Dashboard & KPIs** | Single-pane React dashboard embedding 2D mimic & 3D scene, granulometric benchmark panel, $P_{80}$ deviation alerts. | [`docs/PHASE_05_DASHBOARD_KPIS.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_05_DASHBOARD_KPIS.md) |
+| **Phase 06** | **Predictive Maintenance** | **Parked** until Phases 00–05 are stable and validated data exists to avoid GIGO. | [`docs/PHASE_06_PREDICTIVE_MAINTENANCE_PARKED.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_06_PREDICTIVE_MAINTENANCE_PARKED.md) |
 
 ---
 
-## 🛠️ Operations & Getting Started
+## 🛠️ Operations & Setup
 
-### Prerequisites
-* **Linux / Ubuntu**: Docker Engine + Docker Compose (v2+)
-* **Windows**: Docker Desktop (See [ZINEB_GUIDE.md](file:///home/zakaria/Documents/grindingCircuitProject/ZINEB_GUIDE.md) for full step-by-step setup)
-
-### Quick Commands
-
-#### Start all microservices
+### Launching Environment
 ```bash
 docker compose up -d
 ```
 
-#### Inspect running containers
-```bash
-docker compose ps
-```
-
-#### View service logs
-```bash
-docker compose logs -f replay-service
-```
-
-#### Stop all services
-```bash
-docker compose down
-```
-
----
-
-## 🌐 Service Access URLs
-
-| Service | Port / Access URL | Purpose | Default Credentials |
-| :--- | :--- | :--- | :--- |
-| **Node-RED** | [http://localhost:1880](http://localhost:1880) | Data Integration & Contextualization Engine | *None* |
-| **Ignition SCADA Gateway** | [http://localhost:8088](http://localhost:8088) | 2D HMI & Perspective Views | `admin` / `changeme123` |
-| **Neo4j Graph Browser** | [http://localhost:7474](http://localhost:7474) | AAS Knowledge Graph Database | `neo4j` / `changeme123` |
-| **MinIO Console** | [http://localhost:9091](http://localhost:9091) | Object Storage for Models & Data | `minioadmin` / `minioadmin` |
-| **Mosquitto Broker** | `localhost:1883` (MQTT) / `localhost:9001` (WS) | Messaging Infrastructure | *None* |
+### Port Mapping Summary
+- **Node-RED Engine**: `http://localhost:1880`
+- **Ignition SCADA**: `http://localhost:8088` (Admin: `admin` / `changeme123`)
+- **Neo4j Browser**: `http://localhost:7474` (Auth: `neo4j` / `changeme123`)
+- **MinIO Console**: `http://localhost:9091` (Auth: `minioadmin` / `minioadmin`)
+- **Mosquitto MQTT**: `localhost:1883` (TCP) / `localhost:9001` (WebSockets)

@@ -1,65 +1,61 @@
-# Grinding Circuit Project — Status & Detailed Phase Roadmap
+# Digital Twin Master Plan — Project Status & Roadmap
 
-This file is the single source of truth for the project build status. Always check this file before creating or modifying code, and update it upon completing work.
+Single source of truth tracking project build status against the master plan specification in [digital_twin_grinding_circuit_plan (1).html](file:///home/zakaria/Documents/grindingCircuitProject/digital_twin_grinding_circuit_plan%20%281%29.html).
 
 ---
 
-## 📌 Detailed Phase Roadmap & Build Status
+## 📌 Phase Roadmap & Build Status
 
-### - [x] **Phase 00 — Foundation & Microservices Setup**
+### - [x] **Phase 00 — Foundation & Team Setup**
 * **Status**: Completed (`[x]`)
-* **Core Artifacts & Infrastructure**:
-  - `docker-compose.yml`: Microservice orchestrator managing 6 core services (`mosquitto`, `neo4j`, `minio`, `replay-service`, `ignition`, `nodered`).
-  - Persistent Volumes: Configured `neo4j_data`, `minio_data`, `ignition_data`, and `nodered_data`.
-  - Service Configuration: `/broker/mosquitto.conf` (MQTT port `1883`, WebSockets port `9001`).
-  - Documentation: Master [README.md](file:///home/zakaria/Documents/grindingCircuitProject/README.md), team guide [ZINEB_GUIDE.md](file:///home/zakaria/Documents/grindingCircuitProject/ZINEB_GUIDE.md), and phase status tracking in [PROJECT_STATUS.md](file:///home/zakaria/Documents/grindingCircuitProject/PROJECT_STATUS.md).
-* **Empirical Verification**: All 6 containers confirmed running via `docker compose ps` and responding cleanly on assigned ports.
+* **Plan Ref**: Section 02 (`#phase0`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_00_FOUNDATION_TEAM_SETUP.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_00_FOUNDATION_TEAM_SETUP.md)
+* **Scope & Artifacts**: Shared git repository layout, `docker-compose.yml` orchestrating `mosquitto`, `neo4j`, `minio`, `replay-service`, `ignition`, `node-red`, verified cross-platform on Ubuntu Linux and Windows (Docker Desktop).
 
 ---
 
-### - [x] **Phase 01 — Telemetry Pipeline (SysCAD CSV Replay ➔ MQTT)**
+### - [x] **Phase 01 — Simulated Live Feed**
 * **Status**: Completed (`[x]`)
-* **Core Artifacts & Infrastructure**:
-  - `/replay-service/main.py`: Python MQTT client using Paho MQTT `v2` protocol.
-  - `/replay-service/data.csv`: 482 continuous industrial simulation records from SysCAD.
-  - MQTT Topics: Streaming raw records to `ocp/grinding/telemetry` and equipment-specific streams (`ocp/grinding/equipment/{equip_id}`).
-* **Empirical Verification**: Container logs verified streaming CSV records continuously every 1.0s.
+* **Plan Ref**: Section 03 (`#phase1`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_01_SIMULATED_LIVE_FEED.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_01_SIMULATED_LIVE_FEED.md)
+* **Scope & Artifacts**: CSV replay microservice parsing SysCAD `Dynamic_Results.csv` (`data.csv`) publishing telemetry row-by-row to Mosquitto MQTT broker on `circuit/*` topics, with static granulometric benchmark overlay (%BPL / Cd).
 
 ---
 
-### - [x] **Phase 02 — 2D SCADA Visualization & Node-RED Contextualization**
+### - [x] **Phase 02 — 2D Visualization**
 * **Status**: Completed (`[x]`)
-* **Core Artifacts & Infrastructure**:
-  - **Node-RED Engine**: Service container running on port `1880` (`nodered/node-red:latest`) for telemetry enrichment, calculating recirculating load ratios, target $P_{80}$ deviations (160 µm cut point), and alarm threshold evaluations.
-  - **Ignition SCADA Gateway**: Running on port `8088` (`kcollins/ignition:8.1.33`).
-  - [viz-2d/tags.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/tags.json): Ignition Tag Provider export mapping SCADA expression and memory tags to MQTT topics.
-  - [viz-2d/flowsheet_perspective_view.json](file:///home/zakaria/Documents/grindingCircuitProject/viz-2d/flowsheet_perspective_view.json): Ignition Perspective 2D Synoptic View representing the closed-loop flowsheet (`Slurry_In` ➔ `PB_001` ➔ `SP_001` ➔ `CY_001` ➔ `BM_001` ➔ `Slurry_Out` with underflow recycle).
-* **Empirical Verification**: Ignition Gateway and Node-RED active and responding cleanly on ports `:8088` and `:1880`.
+* **Plan Ref**: Section 04 (`#phase2`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_02_2D_VISUALIZATION.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_02_2D_VISUALIZATION.md)
+* **Scope & Artifacts**: Ignition Maker Edition Gateway commission, Perspective module 2D flowsheet synoptic view (`PB_001` → `SP_001` → `BM_001` → `CY_001`), MQTT Engine tag bindings, pipe percent solids coloring, flow animations, 160 µm cut point target band, and Node-RED KPI calculations.
 
 ---
 
-### - [ ] **Phase 03 — 3D Industrial Visualization (Blender + three.js)**
-* **Status**: Not Started (`[ ]`)
-* **Directory**: `/viz-3d`
-* **Target Scope**: Low-poly GLTF equipment modeling in Blender, interactive 3D WebGL scene rendering via three.js, real-time animation of ball mill rotation and slurry flow particles bound to MQTT flow rates.
+### - [ ] **Phase 03 — 3D Visualization**
+* **Status**: Planned (`[ ]`)
+* **Plan Ref**: Section 05 (`#phase3`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_03_3D_VISUALIZATION.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_03_3D_VISUALIZATION.md)
+* **Scope & Artifacts**: Blender low-poly geometry modeling for Pump Box (`PB_001`), Slurry Pump (`SP_001`), Ball Mill (`BM_001`), and Cyclone Cluster (`CY_001`). GLTF scene loading in three.js WebGL canvas animated via MQTT stream (mill rotation, slurry tint, particle flow).
 
 ---
 
 ### - [ ] **Phase 04 — Knowledge Graph & Asset Administration Shell (AAS)**
-* **Status**: Not Started (`[ ]`)
-* **Directory**: `/graph`
-* **Target Scope**: Industry 4.0 Asset Administration Shell (AAS) submodel definitions (IDTA standard), Neo4j Community property graph model for equipment topology, Cypher queries for lineage and fault propagation tracing.
+* **Status**: Planned (`[ ]`)
+* **Plan Ref**: Section 06 (`#phase4`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_04_KNOWLEDGE_GRAPH_AAS.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_04_KNOWLEDGE_GRAPH_AAS.md)
+* **Scope & Artifacts**: Protégé OWL ontology (`Pump`, `PumpBox`, `Mill`, `CycloneCluster`, `Stream`; relationships `feeds`, `discharges_to`, `recycles_to`), Neo4j Community graph instance, Eclipse BaSyx AAS server with 4 equipment submodels, Cypher circulating load query.
 
 ---
 
-### - [ ] **Phase 05 — Unified React Monitoring Dashboard**
-* **Status**: Not Started (`[ ]`)
-* **Directory**: `/dashboard`
-* **Target Scope**: Modern React + Vite web dashboard embedding Ignition SCADA 2D views, three.js 3D canvas, live KPI cards, equipment slide-out detail drawers, and historical trend charts.
+### - [ ] **Phase 05 — Dashboard & KPIs**
+* **Status**: Planned (`[ ]`)
+* **Plan Ref**: Section 07 (`#phase5`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_05_DASHBOARD_KPIS.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_05_DASHBOARD_KPIS.md)
+* **Scope & Artifacts**: Single-pane React application embedding Ignition 2D Perspective iframe and three.js 3D WebGL scene, Recharts live trend charts, granulometric benchmark panel (%BPL/Cd), circulating-load Cypher tile, and 160 µm cut deviation alerts.
 
 ---
 
 ### - [ ] **Phase 06 — Predictive Maintenance & Flow Optimization**
 * **Status**: Parked (`[ ]` — PARKED)
-* **Directory**: `/ai-ml`
-* **Target Scope**: Parked until realistic sensor failure data is available. Do not write code here.
+* **Plan Ref**: Section 08 (`#phase6`) in HTML plan.
+* **Detailed Documentation**: [`docs/PHASE_06_PREDICTIVE_MAINTENANCE_PARKED.md`](file:///home/zakaria/Documents/grindingCircuitProject/docs/PHASE_06_PREDICTIVE_MAINTENANCE_PARKED.md)
+* **Scope & Artifacts**: Explicitly parked until Phases 00–05 are running cleanly on validated empirical data to prevent GIGO model training.
